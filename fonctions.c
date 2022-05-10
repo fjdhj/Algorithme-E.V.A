@@ -8,11 +8,12 @@
 
 // #  &  { }  ~  [] \  |
 
-void write(FILE* file,int val){ 
+void write(FILE* file,int val){                //Writes an int value inside a binary file. Takes the file structure and the written value as parameters.
 	fwrite(&val,sizeof(int),1,file);
 }
 
-void compression(char* filename){
+void compression(char* filename){			//Takes the name of a ppm file as a parameter, creates a new compressed binary file named "compressed/name of file/" using the EVA algorithm method.
+    char* name=sprintf("compressed%s",filename);
     int EVA_BLK_DEBUG[10];
     int cache[64];
     int previouspixel,currentpixel,output;
@@ -29,7 +30,7 @@ void compression(char* filename){
     height=ppmGetHeight(old);
     range=ppmGetRange(old);
     colors=ppmGetColors(old);
-    FILE* new=fopen("compressed","wb+");
+    FILE* new=fopen(name,"wb+");
     if(!new){
         printf("\n There was a problem.");
     }
@@ -47,7 +48,7 @@ void compression(char* filename){
                 }
                 else{
                     samepixels++;
-		            output=1;
+		    output=1;
                 }
             }
             else if(previouspixel!=currentpixel && EVA_BLK_SAME>192){
