@@ -1,15 +1,21 @@
 BUILDDIR=build
+OUTPUTDIR=AlgoEVA
 
-all : AlgoEVA
+.PHONY: clean createBuildDir
 
-createDir :
-	if [ -d $(BUILDDIR) ]; then echo "Build dir already exist"; else mkdir $(BUILDDIR); fi
+all : $(OUTPUTDIR)/AlgoEVA
 
-$(BUILDDIR)/main.o : createDir main.c header.h
-	gcc -c main.c -o $@
+createBuildDir :
+	@if [ -d $(BUILDDIR) ]; then echo "Build dir already exist"; else mkdir $(BUILDDIR); fi
+
+$(BUILDDIR)/main.o : createBuildDir main.c header.h
+	@gcc -c main.c -o $@
+
+$(OUTPUTDIR)/AlgoEVA : $(BUILDDIR)/main.o
+	@if [ -d $(OUTPUTDIR) ]; then echo "Output dir already exist"; else mkdir $(OUTPUTDIR); fi
+	@gcc $^ -o $@
+	@echo 'You can run the applcation in the folder $(OUTPUTDIR) by typing ./AlgoEVA in the therminal.'
 	
-AlgoEVA : $(BUILDDIR)/main.o
-	gcc $^ -o $@
-	
-clean : 
-	   rm $(BUILDDIR)/*
+clean :
+	@if [ -d $(BUILDDIR) ]; then rm -r $(BUILDDIR); else echo "Build dir already remove"; fi
+	@if [ -d $(OUTPUTDIR) ]; then rm -r $(OUTPUTDIR); else echo "Output dir already remove"; fi
