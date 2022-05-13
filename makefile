@@ -13,8 +13,11 @@ createBuildDir :
 
 $(BUILDDIR)/main.o : createBuildDir main.c header.h
 	@gcc -c main.c -o $@
+	
+$(BUILDDIR)/gestiondossier.o : createBuildDir gestiondossier.c header.h
+	@gcc -c gestiondossier.c -o $@
 
-$(OUTPUTDIR)/AlgoEVA : $(BUILDDIR)/main.o
+$(OUTPUTDIR)/AlgoEVA : $(BUILDDIR)/main.o $(BUILDDIR)/gestiondossier.o
 	@if [ -d $(OUTPUTDIR) ]; then echo "Output dir already exist"; else mkdir $(OUTPUTDIR); fi
 	@gcc $^ -o $@
 	@echo 'You can run the applcation in the $(OUTPUTDIR) folder : '

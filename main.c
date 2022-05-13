@@ -1,6 +1,6 @@
 #include"header.h"
 
-#define MODE_CHOICE_TEXT "\nVeuillez choisir un mode de fonctionnement\n1) Compression\n2) Decompression\nLes réponses possibles sont 1, 2 : "
+#define MODE_CHOICE_TEXT "\nPlease choose an operating mode\n1) Compression\n2) Decompression\nPossibles answer are 1, 2 : "
 
 int getChar(int minVal, int maxVal, char* message){
 	int readChar = 0; //Contain a char when fgetc is use
@@ -21,7 +21,7 @@ int getChar(int minVal, int maxVal, char* message){
 		
 		//Check if the answer has an error (not valide char or to many char)
 		if( !(minVal <= readChar && readChar <= maxVal && (tmp == '\n' || tmp == EOF)) ){
-			printf("\n/!\\Merci de bien vouloir saisir une réponse valide/!\\\n\n\n");
+			printf("\n/!\\Please enter a valid answer/!\\\n\n\n");
 			check = 0;
 			
 			//We need to clear the buffer of fgetc if we have other char
@@ -37,14 +37,25 @@ int getChar(int minVal, int maxVal, char* message){
 	return readChar;
 }
 
+
+/*TODO : - ajouter a DEFAULT_PPM_FOLDER le chemin jusqu'a l'executable, autrement le dossier se situra au l'endroit d'ou est executer la fonction
+	 - Regarder pour le warning a la comilation (possiblement includ mis en commentaire plus haut dans gestiondedossier.c)
+	 - changer les autorisations pas défaut du dossier créer
+*/
 int main(){
-	printf("Interface de paramétrage algorithme EVA\n");
+	printf("EVA algorithm configuration interface\n");
 	
 	char input = getChar('1', '2', MODE_CHOICE_TEXT); //Getting the user input
 	
 	//Compression mode
-	if(input == 1){
+	if(input ==  '1'){
+		if(folderExist(DEFAULT_PPM_FOLDER) == 0){
+			printf("Folder %s do no existe creating it\n", DEFAULT_PPM_FOLDER);
+			createFolder(DEFAULT_PPM_FOLDER);
+		}
 		
+	}else{
+	
 	}
 	
 	

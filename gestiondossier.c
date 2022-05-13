@@ -1,8 +1,55 @@
+#include "header.h"
 #include <dirent.h>    //We use the dirent library to manage the directory the user was told to create
-#include <stdio.h>
-#include <string.h>
+#include <errno.h>
 
-void main(){
+/*#ifndef __linux__
+	#include<sys/stat.h>
+#endif*/
+
+char folderExist(const char* path){
+	DIR* dir = opendir(path);
+	if(dir){
+		closedir(dir);
+		return 1; //The folder exist
+	}else if(ENOENT == errno){
+		return 0; //The folder do not exist
+	}else{
+		perror("[ERROR] An unknown error occured. Can't access to the given folder.\n");
+		exit(0);
+	}
+}
+
+int folderChildNumber(const char* path){
+	if(folderExist(path) == 0){
+		printf("[ERROR] Can't read the content of the given folder : the directory do not exist.\n");
+		exit(0);
+	}
+	
+	DIR* dir = opendir(path);
+	if(dir == NULL){
+		perror("[ERROR] An unknown error occured. Can't access to the given folder.\n");
+		exit(0);
+	}
+	
+	int count = 0;
+	while(readdir(dir) != NULL){
+		count++;
+	}
+	
+	closedir(dir);
+	return count;
+}
+
+
+void createFolder(const char* path){
+	#ifdef __linux__
+		mkdir(path, 777); 
+	#else
+		_mkdir(path);
+	#endif
+}
+
+/*void main(){
     char* lastperiod=NULL;
     int antiperiods=0;
     DIR* d;
@@ -28,4 +75,4 @@ void main(){
         }
         closedir(d);
     }
-}
+}*/

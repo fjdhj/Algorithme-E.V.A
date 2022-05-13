@@ -2,6 +2,8 @@
 #include<stdio.h>
 #include<math.h>
 
+#define DEFAULT_PPM_FOLDER "ppm"
+
 /* ________________________________
 Prototype main.c function
 ________________________________ */
@@ -20,3 +22,32 @@ int main();
 */
 int getChar(int minVal, int maxVal, char* message);
 
+
+
+/* ________________________________
+Prototype gestiondossier.c function
+________________________________ */
+
+/* Check if the given folder exist
+ * If an unknow error occurr, close the program
+ * 
+ * path : the path to the folder
+ * 
+ * return : a char containing 1 if the folder exist, 0 otherwise
+*/
+char folderExist(const char* path);
+
+/* Count the amount of element in a given folder
+ * If an unknow error occurr, close the program
+ * If the directory is empty, the program is also close 
+ * 
+ * path : the path to the folder
+ * 
+ * return : an int containing the amount of elements in a given folder
+*/
+int folderChildNumber(const char* path);
+
+/* Create a folder
+ * path : where the folder need to be created
+*/
+void createFolder(const char* path);
