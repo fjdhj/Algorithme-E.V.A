@@ -2,7 +2,16 @@
 #include<stdio.h>
 #include<math.h>
 
-#define DEFAULT_PPM_FOLDER "ppm"
+#define DEFAULT_PPM_FOLDER_NAME "ppm"
+
+/* ________________________________
+Struct
+________________________________ */
+typedef struct{
+	char* 	tab;
+	int size;
+}CharTab;
+
 
 /* ________________________________
 Prototype main.c function
