@@ -11,15 +11,15 @@
 
 int getEndianness(){ 
 	int n=1;
-	if(*(char *)&n == 1){                            //Taken from stackoverflow
+	if(*(char *)&n == 1){                           
 		return 0;
 	}
 	return 1;
 }
 
 unsigned int reverseint(unsigned int a){ 
-	unsigned int reversed;                         // Reverses order of the 4 bytes of an int. Takes int 0xABCDEFGH as a parameter and returns int 0xGHEFCDAB
-	uint8_t *n1,*n2;				//Taken from stackoverflow
+	unsigned int reversed;                         
+	uint8_t *n1,*n2;				
 	n1=(uint8_t *) &a;
 	n2=(uint8_t *) &reversed;
 	n2[0]=n1[3];
@@ -31,8 +31,8 @@ unsigned int reverseint(unsigned int a){
 
 unsigned short reverseshort(unsigned short a){            
 	unsigned short reversed;
-	uint8_t *n1,*n2;				//Reverses order of the 2 bytes of a short.Takes short 0xABCD as a parameter and returns int 0xCDAB
-	n1=(uint8_t *) &a;				// Adapted from reverseint()
+	uint8_t *n1,*n2;				
+	n1=(uint8_t *) &a;				
 	n2=(uint8_t *) &reversed;
 	n2[0]=n1[1];
 	n2[1]=n1[0];
@@ -40,7 +40,7 @@ unsigned short reverseshort(unsigned short a){
 }
 
 
-void write4blocks(FILE* file,unsigned int val,int endianness){                //Writes a 4 bytes value inside a binary file. Takes the file structure and the written value as parameters.
+void write4blocks(FILE* file,unsigned int val,int endianness){                
     if(endianness==0){ 
         unsigned int reversed=reverseint(val);
         if(fwrite(&reversed,4,1,file)!=1){
@@ -56,7 +56,7 @@ void write4blocks(FILE* file,unsigned int val,int endianness){                //
     }
 }
 
-void write2blocks(FILE* file,unsigned short val,int endianness){             //Writes a 2 bytes value inside a binary file. Takes the file structure and the written value as parameters.
+void write2blocks(FILE* file,unsigned short val,int endianness){            
     if(endianness==0){ 
         unsigned short reversed=reverseshort(val);
         if(fwrite(&reversed,2,1,file)!=1){
@@ -72,14 +72,14 @@ void write2blocks(FILE* file,unsigned short val,int endianness){             //W
     }							
 }
 
-void write1blocks(FILE* file,char val){                //Writes a byte value inside a binary file. Takes the file structure and the written value as parameters.
+void write1blocks(FILE* file,char val){               
     if(fwrite(&val,1,1,file)!=1){
         printf("\nThere was a problem during compression.");
         exit(-1);
     }
 }
 
-void compression(char* filename,int endianness){			//Takes the name of a ppm file as a parameter, creates a new compressed binary file using the EVA algorithm method.
+void compression(char* filename,int endianness){			
     char* name,*path;
     int cache[64],cacheindex=0;
     int previouspixel,currentpixel,output;
