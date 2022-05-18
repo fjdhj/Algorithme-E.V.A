@@ -53,6 +53,7 @@ void write4blocks(FILE* file,unsigned int val,int endianness){
 	if(fwrite(&val,4,1,file)!=1){
            printf("\nThere was a problem during compression.");
            exit(-1);
+	}
     }
 }
 
@@ -90,7 +91,7 @@ void compression(char* filename,int endianness){
     }
 
     printf("\nFILE %s : Give a name to the compressed file.",filename);
-    while(scanf("%s",name)!=1)){ 
+    while(scanf("%s",name)!=1){ 
 	printf("\nInvalid name.");
     }
     if(sprintf(path,"ppm/%s",filename)<=0){ 

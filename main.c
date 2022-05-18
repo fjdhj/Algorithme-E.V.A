@@ -44,6 +44,8 @@ void clearStdinBuffer(){
 	}
 }
 
+/* TODO : vérifier si les élémen de PPM sont des fichiers ou des dossiers
+*/
 int main(int argc, char** argv){
 
 	//Put the program relative path in a var
@@ -63,7 +65,7 @@ int main(int argc, char** argv){
 	path.size = len-progNameSize-start;
 	path.tab = malloc(sizeof(char) * path.size);
 	if(path.tab == NULL){
-		printf("Can't get the program path, memory error.");
+		printf("\nCan't get the program path, memory error.\n");
 		exit(0);
 	}
 	
@@ -71,20 +73,25 @@ int main(int argc, char** argv){
 		path.tab[i-start] = argv[0][i];
 	}
 	
+	
+	
 	//Put the default ppm file relative path in a var
 	CharTab ppmFolderPath;
 	ppmFolderPath.size = path.size+strlen(DEFAULT_PPM_FOLDER_NAME);
 	ppmFolderPath.tab = malloc(sizeof(char) * path.size);
 	if(ppmFolderPath.tab == NULL){
-		printf("Can't get the default folder path, memory error.");
+		printf("\nCan't get the default folder path, memory error.\n");
 		exit(0);
 	}
 	strcat(ppmFolderPath.tab, path.tab);
 	strcat(ppmFolderPath.tab, DEFAULT_PPM_FOLDER_NAME);
 	
+	
+	
+	//Start intecteraction with user
 	printf("EVA algorithm configuration interface\n");
 	
-	char input = getChar('1', '2', MODE_CHOICE_TEXT); //Getting the user input
+	char input = getChar('1', '2', MODE_CHOICE_TEXT); //Getting the user input compression on decompression
 	
 	//Compression mode
 	if(input ==  '1'){
@@ -94,16 +101,57 @@ int main(int argc, char** argv){
 		}
 		
 		printf("You can add ppm file in the %s directory\nWhen you are ready, press return ", ppmFolderPath.tab);
-		clearStdinBuffer();
+		clearStdinBuffer(); //Clear the stdin buffer, but if buffer is already empty, wait for an input
 		
-		int ppmFile = folderChildNumber(ppmFolderPath.tab);
+		//Getting the number of element inside the directory
+		int ppmFileNb = folderChildNumber(ppmFolderPath.tab);
+		printf("There is %d element in %s\n", ppmFileNb, ppmFolderPath.tab);
 		
-		printf("There is %d element in %s", ppmFile, ppmFolderPath.tab);	
+		if(ppmFileNb == 0){
+			printf("The folder %s is empty, please add file.\nEnd of programme.\n", ppmFolderPath.tab);
+			free(path.tab);
+			free(ppmFolderPath.tab);
+			exit(0);
+		}
 		
+		//Getting the list of file name in the directory
+		char** elementNameTab = malloc(sizeof(char*)*ppmFileNb);
+		if(elementNameTab == NULL){
+			printf("\nCan't get the file list, memory error.\n");
+			free(path.tab);
+			free(ppmFolderPath.tab);
+			exit(0);
+		}
+		
+		int result = folderChildName(ppmFolderPath.tab, elementNameTab, ppmFileNb);
+		if(result == -1){
+			printf("[ERROR] Can't get all the child in %s because the tab is to tiny.\nEnd of program.\n", ppmFolderPath.tab);
+			free(path.tab);
+			free(ppmFolderPath.tab);
+			free(elementNameTab);
+			exit(0);
+		}else if(result != 0){
+			printf("[DEBUG] I don't know why but the tab is to big, there are %d empty cels. But we don't care because the programe work well !\n", result);
+			elementNameTab -= result;
+		}
+		
+		int endianness = getEndianness();
+		for(int i = 0; i < ppmFileNb; i++){
+			char buff[500] = {0};
+			strcat(buff, ppmFolderPath.tab);
+			strcat(buff, "/");
+			strcat(buff, elementNameTab[i]);
+			compression(buff, endianness);
+		}
+		
+		
+		
+		free(elementNameTab);
 	}else{
 	
 	}
 	
 	free(path.tab);
+	free(ppmFolderPath.tab);
 	return 0;
 }

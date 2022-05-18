@@ -60,7 +60,7 @@ char folderExist(const char* path);
 
 /* Count the amount of element in a given folder
  * If an unknow error occurr, close the program
- * If the directory is empty, the program is also close 
+ * If the directory do not exist, the program is also close 
  * 
  * path : the path to the folder
  * 
@@ -73,7 +73,17 @@ int folderChildNumber(const char* path);
 */
 void createFolder(const char* path);
 
-
+/* Put elements name in the given elementTab
+ * If an unknow error occurr, close the program
+ * If the directory do not exist or is empty, the program is also close
+ * 
+ * path : the path to the folder
+ * elementNameTab : a tab for storing the child name
+ * tabSize : the size of elementNameTab
+ *
+ * return : -1 if some file miss in elementTab, the size remain in elementNameTab otherwise
+*/
+int folderChildName(const char* path, char** elementNameTab, int tabSize);
 
 /* ________________________________
 Prototype fonction.c function
