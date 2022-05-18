@@ -2,9 +2,9 @@
 #include <dirent.h>    //We use the dirent library to manage the directory the user was told to create
 #include <errno.h>
 
-/*#ifndef __linux__
+#ifdef __linux__
 	#include<sys/stat.h>
-#endif*/
+#endif
 
 char folderExist(const char* path){
 	DIR* dir = opendir(path);
@@ -32,8 +32,16 @@ int folderChildNumber(const char* path){
 	}
 	
 	int count = 0;
-	while(readdir(dir) != NULL){
+	struct dirent* content = NULL;
+	
+	while((content = readdir(dir)) != NULL){
 		count++;
+		#ifdef __linux__
+		if(content->d_name[0] == '.' && (strlen(content->d_name) == 1 || (strlen(content->d_name) == 2 && content->d_name[1] == '.') )){
+			count--;
+		}
+		#endif
+		
 	}
 	
 	closedir(dir);
@@ -43,7 +51,7 @@ int folderChildNumber(const char* path){
 
 void createFolder(const char* path){
 	#ifdef __linux__
-		mkdir(path, 777); 
+		mkdir(path, 0754); 
 	#else
 		_mkdir(path);
 	#endif

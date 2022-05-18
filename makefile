@@ -25,5 +25,5 @@ $(OUTPUTDIR)/AlgoEVA : $(BUILDDIR)/main.o $(BUILDDIR)/gestiondossier.o
 	@echo '- Or juste with : ./AlgoEVA/AlgoEVA'
 	
 clean :
-	@if [ -d $(BUILDDIR) ]; then rm -r $(BUILDDIR); else echo "Build dir already remove"; fi
-	@if [ -d $(OUTPUTDIR) ]; then rm -r $(OUTPUTDIR); else echo "Output dir already remove"; fi
+	@if [ -d $(BUILDDIR) ]; then rm -fr $(BUILDDIR); else echo "Build dir already remove"; fi
+	@if [ -d $(OUTPUTDIR) ]; then rm -fr $(OUTPUTDIR); else echo "Output dir already remove"; fi

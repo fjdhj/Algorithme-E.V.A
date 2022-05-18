@@ -1,5 +1,4 @@
 #include"header.h"
-#include <string.h>
 
 #define MODE_CHOICE_TEXT "\nPlease choose an operating mode\n1) Compression\n2) Decompression\nPossibles answer are 1, 2 : "
 
@@ -26,8 +25,8 @@ int getChar(int minVal, int maxVal, char* message){
 			check = 0;
 			
 			//We need to clear the buffer of fgetc if we have other char
-			while(tmp != '\n' && tmp != EOF){
-				tmp=fgetc(stdin);
+			if(tmp != '\n' && tmp != EOF){
+				clearStdinBuffer();
 			}
 		}else{
 			check = 1;
@@ -38,11 +37,13 @@ int getChar(int minVal, int maxVal, char* message){
 	return readChar;
 }
 
+void clearStdinBuffer(){
+	int tmp = fgetc(stdin);
+	while(tmp != '\n' && tmp != EOF){
+		tmp=fgetc(stdin);
+	}
+}
 
-/*TODO : - ajouter a DEFAULT_PPM_FOLDER le chemin jusqu'a l'executable, autrement le dossier se situra au l'endroit d'ou est executer la fonction
-	 - Regarder pour le warning a la comilation (possiblement includ mis en commentaire plus haut dans gestiondedossier.c)
-	 - changer les autorisations pas défaut du dossier créer
-*/
 int main(int argc, char** argv){
 
 	//Put the program relative path in a var
@@ -91,6 +92,13 @@ int main(int argc, char** argv){
 			printf("Folder %s do no existe creating it\n", ppmFolderPath.tab);
 			createFolder(ppmFolderPath.tab);
 		}
+		
+		printf("You can add ppm file in the %s directory\nWhen you are ready, press return ", ppmFolderPath.tab);
+		clearStdinBuffer();
+		
+		int ppmFile = folderChildNumber(ppmFolderPath.tab);
+		
+		printf("There is %d element in %s", ppmFile, ppmFolderPath.tab);	
 		
 	}else{
 	

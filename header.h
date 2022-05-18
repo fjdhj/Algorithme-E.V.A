@@ -1,6 +1,7 @@
 #include<stdlib.h>
 #include<stdio.h>
 #include<math.h>
+#include <string.h>
 
 #define DEFAULT_PPM_FOLDER_NAME "ppm"
 
@@ -31,6 +32,9 @@ int main();
 */
 int getChar(int minVal, int maxVal, char* message);
 
+/* Clear the buffer of stdin with fgetc
+*/
+void clearStdinBuffer();
 
 
 /* ________________________________
