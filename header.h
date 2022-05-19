@@ -147,6 +147,7 @@ Remaining bytes are the various blocks used by EVA.
 Image used and created file will be found at ppm/[filename].
 char* filename is the name of the to be compressed PPM image. 
 Int endianness is the endianness value defined by a call of getEndianness().
+char* outputfile is the name of the compressed file.
 Does not return anything.
 */
-void compression(char* filename,int endianness);
+void compression(char* filename,int endianness, char* outputfile);

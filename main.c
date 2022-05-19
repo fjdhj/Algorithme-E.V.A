@@ -45,6 +45,7 @@ void clearStdinBuffer(){
 }
 
 /* TODO : vérifier si les élémen de PPM sont des fichiers ou des dossiers
+ * 		demander a l'utilisateur le nom du fichier de sorti
 */
 int main(int argc, char** argv){
 
@@ -136,12 +137,15 @@ int main(int argc, char** argv){
 		}
 		
 		int endianness = getEndianness();
+		char* inFile = NULL, outFile = NULL;
 		for(int i = 0; i < ppmFileNb; i++){
-			char buff[500] = {0};
+			/*char buff[500] = {0};
 			strcat(buff, ppmFolderPath.tab);
 			strcat(buff, "/");
-			strcat(buff, elementNameTab[i]);
-			compression(buff, endianness);
+			strcat(buff, elementNameTab[i]);*/
+			
+			
+			compression(buff, endianness, NULL);
 		}
 		
 		

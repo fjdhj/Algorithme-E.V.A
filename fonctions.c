@@ -1,13 +1,5 @@
 #include "header.h"
-#include "ppm_lib.c"
-#define EVA_BLK_SAME 192
-#define EVA_BLK_INDEX 0
-#define EVA_BLK_DIFF 64
-#define EVA_BLK_LUMA 32768
-#define EVA_BLK_RGB 4261412864
-
-
-// #  &  { }  ~  [] \  |
+#include "ppm_lib.h"
 
 int getEndianness(){ 
 	int n=1;
@@ -80,8 +72,8 @@ void write1blocks(FILE* file,char val){
     }
 }
 
-void compression(char* filename,int endianness){			
-    char* name,*path;
+void compression(char* filename,int endianness, char* outputfile){			
+    char* name;
     int cache[64],cacheindex=0;
     int previouspixel,currentpixel,output;
     int i,j,width,height,range,colors;
@@ -89,16 +81,20 @@ void compression(char* filename,int endianness){
     for(i=0;i<64;i++){
           cache[i]=0;
     }
-
+/*
     printf("\nFILE %s : Give a name to the compressed file.",filename);
-    while(scanf("%s",name)!=1){ 
+    while(scanf("%s",name)!=1)){                                  Partie susceptible de générer des erreurs
 	printf("\nInvalid name.");
-    }
+    } 
+*/
+	
+/*                                                               Partie problématique 
     if(sprintf(path,"ppm/%s",filename)<=0){ 
 	printf("\nThere was a problem while accessing the file.");
 	exit(-1);
     }
-    PPM_IMG* old=ppmOpen(path);
+*/
+    PPM_IMG* old = ppmOpen(filename);             
     if(!old){
         printf("\n There was a problem while opening the file.");
         exit(-1);
@@ -109,7 +105,7 @@ void compression(char* filename,int endianness){
     range=ppmGetRange(old);
     colors=ppmGetColors(old);
 
-    FILE* new=fopen(name,"wb+");
+    FILE* new=fopenoutputfile, "wb+");
     if(!new){
         printf("\n There was a problem.");
         exit(-1);
