@@ -14,9 +14,33 @@ struct _charList{
 CharList* createCharList();
 
 /**
+ * Convert a CharList to a char tab
+ * WARNING : the free function need to be use with the char tab before the end of the program
+ * 
+ * list : the CharList to convert
+ * return the new char tab
+*/
+char* convertCharListToTab(CharList* list);
+
+/**
+ * Convert a char tab to a CharList
+ * 
+ * tab : the char tab to convert
+ * size : the size of the tab
+ * return the new CharList
+*/
+CharList* convertTabToCharList(char* tab, int size);
+
+/**
  * Display the given CharList
 */
 void displayCharList(CharList* list);
+
+/**
+ * Like displayCharList but without space { or ,
+ * It show the content like a char tab with a %s
+*/
+void displayTextCharList(CharList* list);
 
 /**
  * return the size of the given CharList
@@ -41,6 +65,14 @@ CharList* addCharList(int index, char val, CharList* list);
  * list : the CharList
 */
 void appendCharList(char val, CharList* list);
+
+/**
+ * Add the content of a CharList at the end an other 
+ * 
+ * l1 : The ChartList where the content need to be add
+ * l2 : The content to add
+*/
+void concatenateCharList(CharList* l1, CharList* l2);
 
 /**
  * Remove the first element in a list

@@ -1,5 +1,5 @@
 #include "header.h"
-#include "ppm_lib.h"
+#include "ppm_lib.c"
 
 int getEndianness(){ 
 	int n=1;
@@ -96,7 +96,7 @@ void compression(char* filename,int endianness, char* outputfile){
 */
     PPM_IMG* old = ppmOpen(filename);             
     if(!old){
-        printf("\n There was a problem while opening the file.");
+        printf("\n There was a problem while opening the file.\n");
         exit(-1);
     }
 
@@ -105,9 +105,9 @@ void compression(char* filename,int endianness, char* outputfile){
     range=ppmGetRange(old);
     colors=ppmGetColors(old);
 
-    FILE* new=fopenoutputfile, "wb+");
+    FILE* new=fopen(outputfile, "wb+");
     if(!new){
-        printf("\n There was a problem.");
+        printf("\n There was a problem.\n");
         exit(-1);
     }
     previouspixel=-1;

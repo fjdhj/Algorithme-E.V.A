@@ -3,6 +3,7 @@
 #include<math.h>
 #include<string.h>
 #include<stdint.h>
+#include"list.h"
 
 #define DEFAULT_PPM_FOLDER_NAME "ppm"
 
@@ -11,6 +12,12 @@
 #define EVA_BLK_DIFF 64
 #define EVA_BLK_LUMA 32768
 #define EVA_BLK_RGB 4261412864
+
+#ifdef __linux__
+	#define DELIMITER '/'
+#else
+	#define DELIMITER '\\'
+#endif
 
 /* ________________________________
 Struct
@@ -83,7 +90,7 @@ void createFolder(const char* path);
  *
  * return : -1 if some file miss in elementTab, the size remain in elementNameTab otherwise
 */
-int folderChildName(const char* path, char** elementNameTab, int tabSize);
+int folderChildName(const char* path, CharList** elementNameTab, int tabSize);
 
 /* ________________________________
 Prototype fonction.c function

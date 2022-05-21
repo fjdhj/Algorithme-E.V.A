@@ -48,7 +48,7 @@ int folderChildNumber(const char* path){
 	return count;
 }
 
-int folderChildName(const char* path, char** elementNameTab, int tabSize){
+int folderChildName(const char* path, CharList** elementNameList, int tabSize){
 	if(folderExist(path) == 0){
 		printf("[ERROR] Can't read the content of the given folder : the directory do not exist.\n");
 		exit(0);
@@ -68,10 +68,13 @@ int folderChildName(const char* path, char** elementNameTab, int tabSize){
 	int count = 0;
 	struct dirent* content = NULL;
 	
+	
+	
 	while((content = readdir(dir)) != NULL && count < tabSize){
+		printf("%c", content->d_name[5]);
 		#ifdef __linux__
 		if(  !(content->d_name[0] == '.' && (strlen(content->d_name) == 1 || ( strlen(content->d_name) == 2 && content->d_name[1] == '.' ) ))  ){
-			elementNameTab[count] = content->d_name;
+			elementNameList[count] = convertTabToCharList(content->d_name, strlen(content->d_name));
 			count++;
 		}
 		#else
@@ -79,10 +82,15 @@ int folderChildName(const char* path, char** elementNameTab, int tabSize){
 			count++;
 		#endif
 		
+		
 	}
 	
+	#ifdef __linux__
+		//On linux file system . and .. can be at the end or the start in c
+		while(  (content->d_name[0] == '.' && (strlen(content->d_name) == 1 || ( strlen(content->d_name) == 2 && content->d_name[1] == '.' ) )) &&  (content = readdir(dir)) != NULL);
+	#endif
 	closedir(dir);
-	
+
 	if(content != NULL){
 		return -1;
 	}else{

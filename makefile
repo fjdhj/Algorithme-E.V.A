@@ -11,16 +11,19 @@ all : $(OUTPUTDIR)/AlgoEVA
 createBuildDir :
 	@if [ -d $(BUILDDIR) ]; then echo "Build dir already exist"; else mkdir $(BUILDDIR); fi
 
-$(BUILDDIR)/main.o : createBuildDir main.c header.h
+$(BUILDDIR)/main.o : createBuildDir main.c header.h list.h
 	@gcc -c main.c -o $@
 	
-$(BUILDDIR)/gestiondossier.o : createBuildDir gestiondossier.c header.h
+$(BUILDDIR)/gestiondossier.o : createBuildDir gestiondossier.c header.h list.h
 	@gcc -c gestiondossier.c -o $@
 
-$(BUILDDIR)/fonctions.o : createBuildDir fonctions.c header.h
+$(BUILDDIR)/fonctions.o : createBuildDir fonctions.c header.h list.h
 	@gcc -c fonctions.c -o $@
 
-$(OUTPUTDIR)/AlgoEVA : $(BUILDDIR)/main.o $(BUILDDIR)/gestiondossier.o $(BUILDDIR)/fonctions.o
+$(BUILDDIR)/charList.o : createBuildDir charList.c list.h
+	@gcc -c charList.c -o $@
+
+$(OUTPUTDIR)/AlgoEVA : $(BUILDDIR)/main.o $(BUILDDIR)/gestiondossier.o $(BUILDDIR)/fonctions.o $(BUILDDIR)/charList.o
 	@if [ -d $(OUTPUTDIR) ]; then echo "Output dir already exist"; else mkdir $(OUTPUTDIR); fi
 	@gcc $^ -o $@
 	@echo 'You can run the applcation in the $(OUTPUTDIR) folder : '

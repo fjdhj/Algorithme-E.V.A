@@ -11,6 +11,57 @@ CharList* createCharList(){
 	return list;
 }
 
+char* convertCharListToTab(CharList* list){
+	if(list == NULL){
+		printf("[ERROR] Can't copy elements from NULL. Program Exit.\n");
+		exit(-1);
+	}
+
+
+	int size = getSize(list);
+	char* tab = malloc( (size*sizeof(char)) +1 );
+	if(tab == NULL){
+		printf("[Error] A memory error occured. Can't create a new char tab. Program Exit.\n");
+		exit(-1);
+	}
+	int i = 0;
+	CharList* p1 = list;
+	while(p1 != NULL){
+		printf("%c", p1->val);
+		tab[i] = p1->val;
+		p1 = p1->next;
+		i++;
+	}
+	tab[size] = '\0';
+	printf("i : %d, size : %d", i, size);
+	printf("OUT TAB %s\n", tab);
+	return tab;
+}
+
+CharList* convertTabToCharList(char* tab, int size){
+	if(tab == NULL){
+		printf("[ERROR] Can't copy elements from NULL. Program Exit.\n");
+		exit(-1);
+	}
+	
+	if(size < 0){
+		printf("[ERROR] Can't copy elements from tab with a size of 0 or less. Program Exit.\n");
+		exit(-1);
+	}
+	
+	
+	CharList* list = createCharList();
+	list->val = tab[0];
+	CharList* p1 = list;
+	for(int i = 1; i < size; i++){
+		p1->next = createCharList();
+		p1 = p1->next;
+		p1->val = tab[i];
+	}
+
+	return list;
+}
+
 void displayCharList(CharList* list){
 	printf("{");
 	CharList* p1 = list;
@@ -21,6 +72,15 @@ void displayCharList(CharList* list){
 		}else{
 			printf("%c, ",p1->val);
 		}
+		p1 = p1 -> next;
+	}
+}
+
+void displayTextCharList(CharList* list){
+	CharList* p1 = list;
+	
+	while(p1 != NULL){
+		printf("%c",p1->val);
 		p1 = p1 -> next;
 	}
 }
@@ -82,6 +142,22 @@ CharList* addCharList(int index, char val, CharList* list){
 
 void appendCharList(char val, CharList* list){
 	addCharList(-1, val, list);
+}
+
+void concatenateCharList(CharList* l1, CharList* l2){
+	CharList* p1 = l1;
+	CharList* p2 = l2;
+	
+	while(p1->next != NULL){
+		p1 = p1->next;
+	}
+	while(p2 != NULL){
+		p1->next = createCharList();
+		p1 = p1->next;
+		
+		p1->val = p2-> val;
+		p2 = p2->next;
+	}
 }
 
 CharList* removeFirstCharList(CharList* list){
@@ -214,6 +290,17 @@ void mainTest(){
     printf("%c\n", getElementCharList(-1, l));
     printf("%c\n", getElementCharList(-6, l));
     printf("%c\n", getElementCharList(-7, l));
+    
+    displayCharList(l);
+    int size = getSize(l);
+    char* a = convertCharListToTab(l);
+    printf("%s", a);
+    
+    destroyCharList(l);
+    l = convertTabToCharList(a, size);
+    displayCharList(l);
+    
+    free(a);
     destroyCharList(l);
 
 }
