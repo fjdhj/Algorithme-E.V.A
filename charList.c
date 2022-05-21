@@ -7,6 +7,7 @@ CharList* createCharList(){
 		exit(-1);
 	}
 	list->next = NULL;
+	list->val = 0;
 	return list;
 }
 
