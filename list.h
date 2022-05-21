@@ -25,7 +25,7 @@ int getSize(CharList* list);
 
 /**
  * Add an element at the given index in the CharList
- * If the index is negatif, the function start from the end
+ * If the index is negative, the function start from the end
  * 
  * index : the index of the new element
  * val : the value to put in the cells
@@ -64,3 +64,13 @@ CharList* removeLastCharList(CharList* list);
  *list : the list to destroy
 */
 void destroyCharList(CharList* list);
+
+/**
+ * Get the element of a list at the given index
+ * If the index is negative, start from the end
+ * 
+ * index : the index of the value we wan't to get
+ * list : the CharList
+ * return : the element store in list at the given index
+*/
+char getElementCharList(int index, CharList* list);

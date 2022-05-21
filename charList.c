@@ -126,6 +126,42 @@ void destroyCharList(CharList* list){
 	}
 }
 
+char getElementCharList(int index, CharList* list){
+	if(list == NULL){
+		printf("[ERROR] Can't remove a element from NULL. Program Exit.\n");
+		exit(-1);
+	}
+	
+	int size = getSize(list);
+	
+	if(index + size < 0 || index > size){
+		printf("[ERROR] A memory error occured. Can't access to the index %d in the CharList. Program Exit.\n", index);
+		exit(-1);
+	}
+	
+	CharList* p1 = list;
+	if(index == 0 || size+1 == -index){
+		return list -> val;
+		
+	}else{
+		if(index < 0){
+			index += size;
+		}
+		
+		int i = 0;
+		
+		while(i < index){
+			if(p1->next == NULL){
+				printf("[ERROR] A memory error occured. Can't access to the index %d in the CharList. Program Exit.\n", index);
+				exit(-1);
+			}
+			p1 = p1 -> next;
+			i++;
+		}
+	}
+	return p1 -> val;
+}
+
 void mainTest(){
     CharList* l=createCharList();
     l->val='o';
@@ -171,6 +207,12 @@ void mainTest(){
     displayCharList(l);
     printf("\n%d",getSize(l));
     
+    printf("\n%c\n", getElementCharList(2, l));
+    printf("%c\n", getElementCharList(4, l));
+    printf("%c\n", getElementCharList(6, l));
+    printf("%c\n", getElementCharList(-1, l));
+    printf("%c\n", getElementCharList(-6, l));
+    printf("%c\n", getElementCharList(-7, l));
     destroyCharList(l);
 
 }
