@@ -1,4 +1,5 @@
 #include <stdint.h>
+#include <sys/time.h>
 #include "ppm_lib.c"
 #define EVA_BLK_SAME 192
 #define EVA_BLK_INDEX 0
@@ -55,6 +56,19 @@ char val represents the byte written.
 Does not return anything.
 */
 void write1blocks(FILE* file,char val);
+
+/*
+This function returns the time elapsed since January 1,1970 in microseconds (unsigned long). 
+Here we are using it to get the number of seconds that passes between start and end of (de)compression.
+Takes no parameter.
+*/
+unsigned long timer();
+
+/*
+This function returns the size of a file in bytes (long int).
+FILE* f is the stream to the desired file.
+*/
+long int size(FILE* f);
 
 /*
 This function compresses a .ppm image using EVA. It creates a binary file which name will be specified by the user. 
