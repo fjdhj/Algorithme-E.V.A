@@ -70,12 +70,34 @@ void write1blocks(FILE* file,char val){
     }
 }
 
+unsigned long timer(){
+    struct timeval tv;
+    if(gettimeofday(&tv,NULL)==-1){
+        printf("Error occured while accessing time.");
+        exit(-1);
+    }
+    return (1000000*tv.tv_sec)+tv.tv_usec;
+}
+
+long int size(FILE* f){
+    long int filesize;
+    if(f==NULL){
+        printf("There was a problem accessing a file.");
+        exit(-1);
+    }
+    fseek(f,0,2);
+    filesize=ftell(f);
+    return filesize;
+}
+
 void compression(char* filename,int endianness){			
     char* name;
     int cache[64],cacheindex=0;
     int previouspixel,currentpixel,output;
     int i,j,width,height,range,colors;
     int samepixels,index,diffr,diffb,diffg,diffrg,diffbg;
+    unsigned long start,end;
+    long int compressedsize,uncompressedsize;
     for(i=0;i<64;i++){
           cache[i]=0;
     }
@@ -92,7 +114,17 @@ void compression(char* filename,int endianness){
 	exit(-1);
     }
 */
-    PPM_IMG* old=ppmOpen(?????????????????);             
+    FILE* temporary=fopen(????????????????1,rb);
+    if(!temporary){
+        printf("\n There was a problem while opening the file.");
+        exit(-1);
+    }
+    uncompressedsize=size(temporary);
+    fclose(temporary);
+	
+    a=timer();
+	
+    PPM_IMG* old=ppmOpen(?????????????????1);             
     if(!old){
         printf("\n There was a problem while opening the file.");
         exit(-1);
@@ -103,7 +135,7 @@ void compression(char* filename,int endianness){
     range=ppmGetRange(old);
     colors=ppmGetColors(old);
 
-    FILE* new=fopen(??????????????????????,"wb+");
+    FILE* new=fopen(??????????????????????2,"wb+");
     if(!new){
         printf("\n There was a problem.");
         exit(-1);
@@ -178,6 +210,12 @@ void compression(char* filename,int endianness){
             previouspixel=currentpixel;
         }
     }
+    compressedsize=size(new);
     ppmClose(old);
     fclose(new);
+	
+    b=timer();
+	
+    printf("\nCompressing file took %f seconds",(b-a)/1000000.0);
+    printf("\nCompression ratio : %f\%.",(compressedsize/(uncompressedsize/1.0))*100);
 }
