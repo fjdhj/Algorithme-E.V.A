@@ -27,14 +27,11 @@ char* convertCharListToTab(CharList* list){
 	int i = 0;
 	CharList* p1 = list;
 	while(p1 != NULL){
-		printf("%c", p1->val);
 		tab[i] = p1->val;
 		p1 = p1->next;
 		i++;
 	}
 	tab[size] = '\0';
-	printf("i : %d, size : %d", i, size);
-	printf("OUT TAB %s\n", tab);
 	return tab;
 }
 
@@ -54,9 +51,11 @@ CharList* convertTabToCharList(char* tab, int size){
 	list->val = tab[0];
 	CharList* p1 = list;
 	for(int i = 1; i < size; i++){
-		p1->next = createCharList();
-		p1 = p1->next;
-		p1->val = tab[i];
+		if(tab[i] != '\0'){
+			p1->next = createCharList();
+			p1 = p1->next;
+			p1->val = tab[i];
+		}
 	}
 
 	return list;

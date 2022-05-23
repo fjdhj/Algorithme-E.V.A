@@ -49,6 +49,17 @@ void write4blocks(FILE* file,unsigned int val,int endianness){
     }
 }
 
+void read4blocks(FILE* file, unsigned int* val, int endianness){                
+	if(fread(val, 4, 1, file) != 1){
+           printf("\nThere was a problem during compression.");
+           exit(-1);
+	}
+	
+	if(endianness==0){ 
+		*val = reverseint(*val);						
+	}
+}
+
 void write2blocks(FILE* file,unsigned short val,int endianness){            
     if(endianness==0){ 
         unsigned short reversed=reverseshort(val);
@@ -65,11 +76,31 @@ void write2blocks(FILE* file,unsigned short val,int endianness){
     }							
 }
 
+void read2blocks(FILE* file, unsigned short* val, int endianness){            
+	if(fread(val, 2, 1, file) != 1){
+			printf("\nThere was a problem during compression.");
+			exit(-1);
+	}
+	
+	if(endianness==0){ 
+		*val = reverseshort(*val);
+	}
+							
+}
+
 void write1blocks(FILE* file,char val){               
     if(fwrite(&val,1,1,file)!=1){
         printf("\nThere was a problem during compression.");
         exit(-1);
     }
+}
+
+
+void read1blocks(FILE* file,char*	 val){               
+	if(fread(val, 1, 1, file) != 1){
+		printf("\nThere was a problem during compression.");
+		exit(-1);
+	}
 }
 
 void compression(char* filename,int endianness, char* outputfile){			
@@ -81,29 +112,18 @@ void compression(char* filename,int endianness, char* outputfile){
     for(i=0;i<64;i++){
           cache[i]=0;
     }
-/*
-    printf("\nFILE %s : Give a name to the compressed file.",filename);
-    while(scanf("%s",name)!=1)){                                  Partie susceptible de générer des erreurs
-	printf("\nInvalid name.");
-    } 
-*/
-	
-/*                                                               Partie problématique 
-    if(sprintf(path,"ppm/%s",filename)<=0){ 
-	printf("\nThere was a problem while accessing the file.");
-	exit(-1);
-    }
-*/
+
     PPM_IMG* old = ppmOpen(filename);             
     if(!old){
         printf("\n There was a problem while opening the file.\n");
         exit(-1);
     }
-
     width=ppmGetWidth(old);
     height=ppmGetHeight(old);
     range=ppmGetRange(old);
     colors=ppmGetColors(old);
+    
+    printf("Width dec : %d, Width hexa : %X\n, Sizeof(int) : %d", width, width, sizeof(int));
 
     FILE* new=fopen(outputfile, "wb+");
     if(!new){
@@ -182,4 +202,28 @@ void compression(char* filename,int endianness, char* outputfile){
     }
     ppmClose(old);
     fclose(new);
+}
+
+void decompression(char* filename, int endianness, char* outputfile){
+	int cache[64] = {0};
+	int previouspixel = 0;
+	
+	int width = 0, height = 0, range = 0, color = 0;
+	
+	FILE* compress = fopen(filename, "rb");
+	if(compress == NULL){
+		printf("\n There was a problem while opening the file.\n");
+		exit(-1);
+	}
+	
+	read4blocks(compress, &width, endianness);
+	printf("PUTE : %x\n", width);
+	read4blocks(compress, &height, endianness);
+	read4blocks(compress, &range, endianness);
+	read4blocks(compress, &color, endianness);        
+	
+	printf("Width : %d, Height : %d, Range : %d, Color : %d\n", width, height, range, color);
+	
+	PPM_IMG* old = ppmOpen(filename);             
+	
 }

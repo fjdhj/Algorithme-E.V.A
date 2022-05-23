@@ -76,7 +76,7 @@ void clearStdinBuffer(){
 CharTab getExecutableLocation(char* arg0){
 	//Get the lenght of the program name
 	int progNameSize = 0;
-	int len = strlen(arg0)	;
+	int len = strlen(arg0);
 	while(arg0[len-progNameSize] != '/' && arg0[len-progNameSize] != '\\'){
 		progNameSize++;
 	}
@@ -113,7 +113,7 @@ int main(int argc, char** argv){
 	
 	//Put the default ppm file relative path in a var
 	CharTab ppmFolderPath;
-	ppmFolderPath.size = relativeExecutablePath.size+strlen(DEFAULT_PPM_FOLDER_NAME);
+	ppmFolderPath.size = relativeExecutablePath.size+strlen(DEFAULT_PPM_FOLDER_NAME)+1;
 	ppmFolderPath.tab = malloc(sizeof(char) * relativeExecutablePath.size);
 	if(ppmFolderPath.tab == NULL){
 		printf("\nCan't get the default folder path, memory error.\n");
@@ -182,8 +182,6 @@ int main(int argc, char** argv){
 		char* out, *in;
 		
 		//The function fopen use relative path from executable, not execution location
-		/*CharList* outList = convertTabToCharList("ppm/", 4);
-		CharList* inList = convertTabToCharList("ppm/", 4);*/
 		CharList* outList = convertTabToCharList(ppmFolderPath.tab, ppmFolderPath.size);
 		CharList* inList = convertTabToCharList(ppmFolderPath.tab, ppmFolderPath.size);
 		appendCharList(DELIMITER, inList);
@@ -217,7 +215,7 @@ int main(int argc, char** argv){
 			
 		free(elementNameTab);
 	}else{
-	
+		decompression("ppm/DPC", getEndianness(), "AYAYA.ppm");
 	}
 	
 	free(relativeExecutablePath.tab);

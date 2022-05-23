@@ -71,7 +71,6 @@ int folderChildName(const char* path, CharList** elementNameList, int tabSize){
 	
 	
 	while((content = readdir(dir)) != NULL && count < tabSize){
-		printf("%c", content->d_name[5]);
 		#ifdef __linux__
 		if(  !(content->d_name[0] == '.' && (strlen(content->d_name) == 1 || ( strlen(content->d_name) == 2 && content->d_name[1] == '.' ) ))  ){
 			elementNameList[count] = convertTabToCharList(content->d_name, strlen(content->d_name));
@@ -87,7 +86,9 @@ int folderChildName(const char* path, CharList** elementNameList, int tabSize){
 	
 	#ifdef __linux__
 		//On linux file system . and .. can be at the end or the start in c
-		while(  (content->d_name[0] == '.' && (strlen(content->d_name) == 1 || ( strlen(content->d_name) == 2 && content->d_name[1] == '.' ) )) &&  (content = readdir(dir)) != NULL);
+		while(  content != NULL && (content->d_name[0] == '.' && (strlen(content->d_name) == 1 || ( strlen(content->d_name) == 2 && content->d_name[1] == '.' ) ))){
+			content = readdir(dir);
+		}
 	#endif
 	closedir(dir);
 
