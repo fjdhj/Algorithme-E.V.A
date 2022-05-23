@@ -44,6 +44,7 @@ void write4blocks(FILE* file,unsigned int val,int endianness){
 	if(fwrite(&val,4,1,file)!=1){
            printf("\nThere was a problem during compression.");
            exit(-1);
+	}
     }
 }
 
@@ -114,7 +115,7 @@ void compression(char* filename,int endianness){
 	exit(-1);
     }
 */
-    FILE* temporary=fopen(????????????????1,rb);
+    FILE* temporary=fopen("daftpunk.ppm","rb");
     if(!temporary){
         printf("\n There was a problem while opening the file.");
         exit(-1);
@@ -122,9 +123,9 @@ void compression(char* filename,int endianness){
     uncompressedsize=size(temporary);
     fclose(temporary);
 	
-    a=timer();
+    start=timer();
 	
-    PPM_IMG* old=ppmOpen(?????????????????1);             
+    PPM_IMG* old=ppmOpen("daftpunk.ppm");             
     if(!old){
         printf("\n There was a problem while opening the file.");
         exit(-1);
@@ -135,7 +136,7 @@ void compression(char* filename,int endianness){
     range=ppmGetRange(old);
     colors=ppmGetColors(old);
 
-    FILE* new=fopen(??????????????????????2,"wb+");
+    FILE* new=fopen("Compressed","wb+");
     if(!new){
         printf("\n There was a problem.");
         exit(-1);
@@ -214,8 +215,8 @@ void compression(char* filename,int endianness){
     ppmClose(old);
     fclose(new);
 	
-    b=timer();
+    end=timer();
 	
-    printf("\nCompressing file took %f seconds",(b-a)/1000000.0);
-    printf("\nCompression ratio : %f\%.",(compressedsize/(uncompressedsize/1.0))*100);
+    printf("\nCompressing file took %f seconds",(end-start)/1000000.0);
+    printf("\nCompression ratio : compressed is %f%% the size of the original image.",(compressedsize/(uncompressedsize/1.0))*100);
 }
