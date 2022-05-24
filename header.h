@@ -12,6 +12,7 @@
 #define EVA_BLK_DIFF 64
 #define EVA_BLK_LUMA 32768
 #define EVA_BLK_RGB 4261412864
+#define EVA_BLK_RGB_READER 0xFE
 
 #ifdef __linux__
 	#define DELIMITER '/'

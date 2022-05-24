@@ -56,7 +56,7 @@ void read4blocks(FILE* file, unsigned int* val, int endianness){
 	}
 	
 	if(endianness==0){ 
-		*val = reverseint(*val);						
+		*val=reverseint(*val);
 	}
 }
 
@@ -81,11 +81,10 @@ void read2blocks(FILE* file, unsigned short* val, int endianness){
 			printf("\nThere was a problem during compression.");
 			exit(-1);
 	}
-	
+		
 	if(endianness==0){ 
-		*val = reverseshort(*val);
-	}
-							
+		*val=reverseint(*val);
+	}					
 }
 
 void write1blocks(FILE* file,char val){               
@@ -96,7 +95,7 @@ void write1blocks(FILE* file,char val){
 }
 
 
-void read1blocks(FILE* file,char*	 val){               
+void read1blocks(FILE* file, unsigned char*	 val){               
 	if(fread(val, 1, 1, file) != 1){
 		printf("\nThere was a problem during compression.");
 		exit(-1);
@@ -122,8 +121,6 @@ void compression(char* filename,int endianness, char* outputfile){
     height=ppmGetHeight(old);
     range=ppmGetRange(old);
     colors=ppmGetColors(old);
-    
-    printf("Width dec : %d, Width hexa : %X\n, Sizeof(int) : %d", width, width, sizeof(int));
 
     FILE* new=fopen(outputfile, "wb+");
     if(!new){
@@ -204,11 +201,25 @@ void compression(char* filename,int endianness, char* outputfile){
     fclose(new);
 }
 
+void nextPixel(long* x, long* y, unsigned int width){
+	(*x)++;
+	(*y)+=(*x)/width;
+	(*x)=(*x)%width;
+}
+
 void decompression(char* filename, int endianness, char* outputfile){
-	int cache[64] = {0};
-	int previouspixel = 0;
+	unsigned int cache[64] = {0};
+	unsigned int previouspixel = 0, currentpixel = 0;
+	
+	int cachIndex = 0, nbPixelSuite = 0;
 	
 	int width = 0, height = 0, range = 0, color = 0;
+	
+	unsigned char bloc = 0, redP = 0, greenP = 0, blueP = 0;
+	
+	unsigned char diffG = 0, diffR = 0, diffB = 0;
+	
+	long x = 0, y = 0;
 	
 	FILE* compress = fopen(filename, "rb");
 	if(compress == NULL){
@@ -216,14 +227,96 @@ void decompression(char* filename, int endianness, char* outputfile){
 		exit(-1);
 	}
 	
+	//The first 16 byte are for the width, height, range and color, we need to get them
 	read4blocks(compress, &width, endianness);
-	printf("PUTE : %x\n", width);
 	read4blocks(compress, &height, endianness);
 	read4blocks(compress, &range, endianness);
 	read4blocks(compress, &color, endianness);        
-	
+	printf("AFDT7I %x", width);
 	printf("Width : %d, Height : %d, Range : %d, Color : %d\n", width, height, range, color);
 	
-	PPM_IMG* old = ppmOpen(filename);             
+	PPM_IMG* uncompressed = ppmNew(width, height, range, color);
+	
+	while(y != height+1 && x != 0){
+		read1blocks(compress, &bloc);
+		
+		if(bloc == EVA_BLK_RGB_READER){
+			read1blocks(compress, &redP);
+			read1blocks(compress, &greenP);
+			read1blocks(compress, &blueP);
+			
+			currentpixel = pixel(redP, greenP, blueP);
+			ppmWrite(uncompressed, x, y, currentpixel);
+			nextPixel(&x, &y, width);
+			
+		//This condition means if the 2 strong bite are on 1, we have a EVA_BLK_SAME bloc
+		}else if((bloc >> 6) == 3){
+			nbPixelSuite = (bloc-EVA_BLK_SAME)+1;
+			for(int i = 0; i < nbPixelSuite; i++){
+				ppmWrite(uncompressed, x, y, currentpixel);
+				nextPixel(&x, &y, width);
+			}
+			
+			nbPixelSuite = 0;
+		
+		//This condition means if the 2 strong bite are on 0, we have a EVA_BLK_INDEX bloc
+		}else if((bloc >> 6) == 0){
+			currentpixel = cache[bloc];
+			ppmWrite(uncompressed, x, y, currentpixel);
+			nextPixel(&x, &y, width);
+			
+		//This condition means if the byte look like 01xxxxxx, we have a EVA_BLK_DIFF bloc
+		}else if((bloc >> 6) == 1){
+			//We need to put the 7th bit on 0
+			bloc -= 64; //(64 = 01000000)
+			
+			redP = (red(previouspixel)-2) + (bloc>>4);
+			//When we have the red color, we need to put bits 6th and 5th to 0
+			bloc = (bloc << 4) >>4;
+			
+			greenP = (green(previouspixel)-2) + (bloc>>2);
+			//When we have the red color, we need to put bits 4th and 3rd to 0
+			bloc = (bloc << 6) >> 6;
+			
+			blueP = (blue(previouspixel)-2) + bloc;
+			
+			currentpixel = pixel(redP, greenP, blueP);
+			ppmWrite(uncompressed, x, y, currentpixel);
+			nextPixel(&x, &y, width);
+		
+		//This condition means if the byte look like 10xxxxxx, we have a EVA_BLK_LUMA bloc
+		}else if((bloc >> 6) == 2){
+			//We need to put the 8th bit on 0
+			bloc -= 128; //(64 = 01000000)
+			
+			diffG = bloc-32;
+			
+			//We need to rad the next bloc to get diffR and diffB
+			read1blocks(compress, &bloc);
+			diffR = (bloc >> 4) + diffG - 8;
+			diffB = ((bloc >> 4) << 4) + diffG - 8;
+			
+			redP = diffR + red(previouspixel);
+			greenP = diffG + green(previouspixel);
+			blueP = diffB + blue(previouspixel);
+			
+			currentpixel = pixel(redP, greenP, blueP);
+			ppmWrite(uncompressed, x, y, currentpixel);
+			nextPixel(&x, &y, width);
+			
+		}else{
+			printf("[Error] An error occur while reading the compressed file : unknow bloc.\n End of program\n");
+			exit(-1);
+		
+		}
+		
+		//We put the current pixel in the cache
+		cache[cachIndex] = currentpixel;
+		cachIndex = (cachIndex+1)%64;
+		previouspixel = currentpixel;
+	}
+	
+	ppmSave(uncompressed, outputfile);
+	fclose(compress);
 	
 }
