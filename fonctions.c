@@ -19,6 +19,7 @@ unsigned int reverseint(unsigned int a){
 	n2[2]=n1[1];
 	n2[3]=n1[0];
 	return reversed;
+	return a;
 }
 
 unsigned short reverseshort(unsigned short a){            
@@ -29,6 +30,7 @@ unsigned short reverseshort(unsigned short a){
 	n2[0]=n1[1];
 	n2[1]=n1[0];
 	return reversed;
+	return a;
 }
 
 
@@ -51,7 +53,7 @@ void write4blocks(FILE* file,unsigned int val,int endianness){
 
 void read4blocks(FILE* file, unsigned int* val, int endianness){                
 	if(fread(val, 4, 1, file) != 1){
-           printf("\nThere was a problem during compression.");
+           printf("\n[READ4BLOC] There was a problem during decompression.\n");
            exit(-1);
 	}
 	
@@ -70,7 +72,7 @@ void write2blocks(FILE* file,unsigned short val,int endianness){
     }
     else{ 
         if(fwrite(&val,2,1,file)!=1){
-           printf("\nThere was a problem during compression.");
+           printf("\nThere was a problem during decompression.");
            exit(-1);
         }
     }							
@@ -78,12 +80,12 @@ void write2blocks(FILE* file,unsigned short val,int endianness){
 
 void read2blocks(FILE* file, unsigned short* val, int endianness){            
 	if(fread(val, 2, 1, file) != 1){
-			printf("\nThere was a problem during compression.");
+			printf("\n[READ2BLOC] There was a problem during compression.\n");
 			exit(-1);
 	}
 		
 	if(endianness==0){ 
-		*val=reverseint(*val);
+		*val=reverseshort(*val);
 	}					
 }
 
@@ -95,9 +97,10 @@ void write1blocks(FILE* file,char val){
 }
 
 
-void read1blocks(FILE* file, unsigned char*	 val){               
+void read1blocks(FILE* file, unsigned char*	 val){   
+	printf("Nb byte read : %ld", ftell(file));            
 	if(fread(val, 1, 1, file) != 1){
-		printf("\nThere was a problem during compression.");
+		printf("\n[READ1BLOC] There was a problem during decompression.\n");
 		exit(-1);
 	}
 }
@@ -232,13 +235,14 @@ void decompression(char* filename, int endianness, char* outputfile){
 	read4blocks(compress, &height, endianness);
 	read4blocks(compress, &range, endianness);
 	read4blocks(compress, &color, endianness);        
-	printf("AFDT7I %x", width);
 	printf("Width : %d, Height : %d, Range : %d, Color : %d\n", width, height, range, color);
 	
 	PPM_IMG* uncompressed = ppmNew(width, height, range, color);
 	
-	while(y != height+1 && x != 0){
+	while(ftell(compress) != 1115537/*y != height+1*/){
+		printf("Current x : %ld, y : %ld\n", x, y);
 		read1blocks(compress, &bloc);
+		printf("Byte read : %X\n", bloc);
 		
 		if(bloc == EVA_BLK_RGB_READER){
 			read1blocks(compress, &redP);
