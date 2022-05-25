@@ -1,4 +1,3 @@
-#include <stdint.h>
 #include <sys/time.h>
 #include "ppm_lib.c"
 #define EVA_BLK_SAME 192
@@ -9,15 +8,19 @@
 
 /*
 This function returns the endianness setting of the machine it is being executed on.
-Taken from stackoverflow.
 Takes no parameter.
 Returns either int 0 for little endian or int 1 for big endian.
 */
 int getEndianness();
 
 /*
+This functions returns int value to the power of int p. 
+Follows p^0=1.
+*/
+int power(int value, int p);
+
+/*
 This function reverses the order of bytes of an int. 0xABCDEFGH becomes 0xGHEFCDAB.
-Taken from stackoverflow.
 Takes the int a as its sole parameter.
 Returns an int which is a with reversed bytes order.
 */
@@ -25,7 +28,6 @@ unsigned int reverseint(unsigned int a);
 
 /*
 This function reverses the order of bytes of a short. 0xABCD becomes 0xCDAB.
-Adapted from reverseint().
 Takes the short a as its sole parameter.
 Returns a short which is a with reversed bytes order.
 */
