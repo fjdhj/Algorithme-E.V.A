@@ -98,7 +98,7 @@ void read1blocks(FILE* file, unsigned char*	 val){
 		printf("\n[READ1BLOC] There was a problem during decompression.\n");
 		exit(-1);
 	}
-	printf("Byte read : %X\n", *val); 
+	//printf("Byte read : %X\n", *val); 
 }
 
 void compression(char* filename,int endianness, char* outputfile){			
@@ -196,6 +196,11 @@ void compression(char* filename,int endianness, char* outputfile){
             previouspixel=currentpixel;
         }
     }
+    
+    if(samepixels != 0){
+    		write1blocks(new,EVA_BLK_SAME+samepixels-1);
+    }
+    
     ppmClose(old);
     fclose(new);
 }
@@ -227,10 +232,6 @@ void decompression(char* filename, int endianness, char* outputfile){
 	}
 	
 	
-	PPM_IMG* TESTOS = ppmOpen("ppm/daftpunk.ppm");
-	
-	
-	
 	//The first 16 byte are for the width, height, range and color, we need to get them
 	read4blocks(compress, &width, endianness);
 	read4blocks(compress, &height, endianness);
@@ -240,15 +241,13 @@ void decompression(char* filename, int endianness, char* outputfile){
 	
 	PPM_IMG* uncompressed = ppmNew(width, height, range, color);
 	
-	int aze = 0;
-	
-	while(/*ftell(compress) != 1115537*/ /*y != 686*/y != height){
-		printf("Current x : %ld, y : %ld\n", x, y);
+	while(y != height){
+		//printf("Current x : %ld, y : %ld\n", x, y);
 		read1blocks(compress, &bloc);
 		
 		if(bloc == EVA_BLK_RGB_READER){
 		
-			printf("EVA_BLK_RGB_READER\n");
+			//printf("EVA_BLK_RGB_READER\n");
 		
 			read1blocks(compress, &redP);
 			read1blocks(compress, &greenP);
@@ -261,10 +260,10 @@ void decompression(char* filename, int endianness, char* outputfile){
 		//This condition means if the 2 strong bite are on 1, we have a EVA_BLK_SAME bloc
 		}else if((bloc >> 6) == 3){
 		
-			printf("EVA_BLK_SAME\n");
+			//printf("EVA_BLK_SAME\n");
 		
 			nbPixelSuite = (bloc-EVA_BLK_SAME)+1;
-			printf("NB SUITE : %d\n", nbPixelSuite);
+			//printf("NB SUITE : %d\n", nbPixelSuite);
 			for(int i = 0; i < nbPixelSuite; i++){
 				ppmWrite(uncompressed, x, y, currentpixel);
 				nextPixel(&x, &y, width);
@@ -279,7 +278,7 @@ void decompression(char* filename, int endianness, char* outputfile){
 		//This condition means if the 2 strong bite are on 0, we have a EVA_BLK_INDEX bloc
 		}else if((bloc >> 6) == 0){
 		
-			printf("EVA_BLK_INDEX, index val = %d\n", bloc);
+			//printf("EVA_BLK_INDEX, index val = %d\n", bloc);
 			
 			currentpixel = cache[bloc];
 			ppmWrite(uncompressed, x, y, currentpixel);
@@ -288,7 +287,7 @@ void decompression(char* filename, int endianness, char* outputfile){
 		//This condition means if the byte look like 01xxxxxx, we have a EVA_BLK_DIFF bloc
 		}else if((bloc >> 6) == 1){
 		
-			printf("EVA_BLK_DIFF\n");
+			//printf("EVA_BLK_DIFF\n");
 			
 			redP = red(previouspixel) -2 + ((bloc&0x30)>>4);
 			
@@ -303,7 +302,7 @@ void decompression(char* filename, int endianness, char* outputfile){
 		//This condition means if the byte look like 10xxxxxx, we have a EVA_BLK_LUMA bloc
 		}else if((bloc >> 6) == 2){
 		
-			printf("EVA_BLK_LUMA\n");
+			//printf("EVA_BLK_LUMA\n");
 		
 			//We need to put the 8th bit on 0
 			bloc -= 128; //(64 = 01000000)
@@ -329,24 +328,10 @@ void decompression(char* filename, int endianness, char* outputfile){
 		
 		}
 		
-		int tmpx = (x - 1);
-		int tmpy = y;
-		
-		if(tmpx < 0){
-			tmpy--; 
-			tmpx +=width;
-		}
-		
-		/*if((x > 1 || y != 0) && currentpixel != ppmRead(TESTOS,tmpx,tmpy)){
-			printf("ALERT A MALIBU\n");
-			exit(-1);
-		}*/
-		
 		//We put the current pixel in the cache
 		cacheIndex = (cacheIndex+1)%64;
 		cache[cacheIndex] = currentpixel;
 		previouspixel = currentpixel;
-		aze ++;
 	}
 	
 	ppmSave(uncompressed, outputfile);
