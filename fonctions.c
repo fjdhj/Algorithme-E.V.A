@@ -1,7 +1,7 @@
 #include <header.h>
 
 int getEndianness(){
-    //This function returns endianness of computer (1 for little endian, 0 for big endian)
+    //This function returns endianness of computer (0 for little endian, 1 for big endian)
     //We take a char pointer which points to the first byte of an int b of value 1, byte whose address is (char*)&b.
     //Adding (char*) before &b when assigning value is necessary because of the fact that b is an int, which causes type conflicts with char pointer p.
     //If first byte *p is 1, then the int was stored by a system using little endian. Else, *p is 0.
@@ -15,9 +15,9 @@ int getEndianness(){
     }
     a=*p;
     if(a==1){
-        return 1;
+        return 0;
     }
-    return 0;
+    return 1;
 
 }
 
