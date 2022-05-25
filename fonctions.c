@@ -1,33 +1,72 @@
 #include <header.h>
 
-int getEndianness(){ 
-	int n=1;
-	if(*(char *)&n == 1){                           
-		return 0;
-	}
-	return 1;
+int getEndianness(){
+    //This function returns endianness of computer (1 for little endian, 0 for big endian)
+    //We take a char pointer which points to the first byte of an int b of value 1, byte whose address is (char*)&b.
+    //Adding (char*) before &b when assigning value is necessary because of the fact that b is an int, which causes type conflicts with char pointer p.
+    //If first byte *p is 1, then the int was stored by a system using little endian. Else, *p is 0.
+    char a;
+    int b=1;
+    char* p=NULL;
+    p=(char*)&b;
+    if(!p){
+        printf("\nMemory error occured.");
+        exit(-1);
+    }
+    a=*p;
+    if(a==1){
+        return 1;
+    }
+    return 0;
+
 }
 
-unsigned int reverseint(unsigned int a){ 
-	unsigned int reversed;                         
-	uint8_t *n1,*n2;				
-	n1=(uint8_t *) &a;
-	n2=(uint8_t *) &reversed;
-	n2[0]=n1[3];
-	n2[1]=n1[2];
-	n2[2]=n1[1];
-	n2[3]=n1[0];
-	return reversed;
+
+int power(int value, int p){
+    //This function returns value to the power of p. Follows p^0 = 1.
+    int result=1;
+    if(p==0){
+        return 1;
+    }
+    for(int i=1;i<=p;i++){
+        result*=value;
+    }
+    return result;
 }
 
-unsigned short reverseshort(unsigned short a){            
-	unsigned short reversed;
-	uint8_t *n1,*n2;				
-	n1=(uint8_t *) &a;				
-	n2=(uint8_t *) &reversed;
-	n2[0]=n1[1];
-	n2[1]=n1[0];
-	return reversed;
+unsigned int reverseint(unsigned int a){
+    //This function returns the int a with reversed byte order. 0x01234567 becomes 0x67452301.
+    //We take the last byte of a and add it to the first non-already seen byte of reversed. a is then shifted right the size of a byte. 
+    //We repeat 4 times to complete reversed.
+    /*
+    Example : input 0xAAAABBBB
+    1: a=0xAAAABB\BB ; reversed=0xBB000000
+    2: a=0xAAAA\BB ; reversed=0xBBBB0000
+    3: a=0xAA\AA ; reversed=0xBBBBAA00
+    4: a=0x\AA ; reversed=0xBBBBAAAA
+    */
+    int temp;
+    unsigned int reversed=0;
+    for(int i=0;i<=3;i++){
+        temp=a%256;
+        a=a>>8;
+        reversed+=power(256,3-i)*temp;
+    }
+    return reversed;
+}
+
+unsigned short reverseshort(unsigned short a){
+    //This function returns the short a with reversed byte order. 0x0123 becomes 0x2301
+    //We take the last byte of a and add it to the first non-already seen byte of reversed. a is then shifted right the size of a byte.
+    //We repeat 2 times to complete reversed.
+    int temp;
+    unsigned short reversed=0;
+    for(int i=0;i<=1;i++){
+        temp=a%256;
+        a=a>>8;
+        reversed+=power(256,1-i)*temp;
+    }
+    return reversed;
 }
 
 
