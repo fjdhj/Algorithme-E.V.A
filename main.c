@@ -107,7 +107,6 @@ CharTab getExecutableLocation(char* arg0){
  * 		demander a l'utilisateur le nom du fichier de sorti
 */
 int main(int argc, char** argv){
-
 	//Put the program relative path in a var
 	CharTab relativeExecutablePath = getExecutableLocation(argv[0]);
 	
