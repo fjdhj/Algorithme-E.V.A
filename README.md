@@ -16,6 +16,13 @@ Because we care a lot about customer transparency, our program will tell you pre
 6) When compressing or uncompressing, old files are not removed to make sure no accidents happen.
 7) Have fun !
 
-  
+--**List of modules**--
+
+main.c : Our main function.  
+fonctions.c : C file containing all intermediary functions.  
+header.h : Our C header. Contains libraries inclusions, declaration of constants and prototypes.  
+makefile : Our makefile.  
+
+Libraries used : stdio.h ; stdlib.h ; dirent.h ; ppm_lib.h ; ppm_lib.c ; <sys/time.h> ; string.h ; math.h
 
 -Théo Kalifa & Alexandre Grisez \ PréIng1 Groupe 6 MI \ CY TECH
