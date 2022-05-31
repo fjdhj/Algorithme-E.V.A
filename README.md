@@ -23,7 +23,7 @@ Because we care a lot about customer transparency, our program will tell you pre
 main.c :                 The main function.  
 fonctions.c :            C file containing all intermediary functions.  
 ppm_lib.c / ppm_lib.h :  C package containing intermediary functions used to handle PPM files.  
-lists.c / list.h :       C package containing intermediary functions used to manipulate linked lists. 
+lists.c / list.h :       C package containing intermediary functions used to manipulate linked lists.  
 files.c :                C file containing intermediary functions used to manage directories and files.  
 header.h :               C header. Contains libraries inclusions, declaration of constants and prototypes.  
 makefile :               Our makefile.
