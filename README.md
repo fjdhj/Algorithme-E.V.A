@@ -20,10 +20,13 @@ Because we care a lot about customer transparency, our program will tell you pre
 
 --**List of modules**--
 
-main.c : Our main function.  
+main.c : The main function.  
 fonctions.c : C file containing all intermediary functions.  
-header.h : Our C header. Contains libraries inclusions, declaration of constants and prototypes.  
-makefile : Our makefile.  
+ppm_lib.c / ppm_lib.h : C package containing intermediary functions used to handle PPM files.  
+files.c : C file containing intermediary functions used to manage directories and files.   
+header.h : C header. Contains libraries inclusions, declaration of constants and prototypes.  
+makefile : Our makefile.
+
 
 Libraries used : stdio.h ; stdlib.h ; dirent.h ; ppm_lib.h ; ppm_lib.c ; <sys/time.h> ; string.h ; math.h
 
