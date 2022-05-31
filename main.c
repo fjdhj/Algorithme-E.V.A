@@ -37,7 +37,7 @@ int getChar(int minVal, int maxVal, char* message){
 	return readChar;
 }
 
-char* getFileName(CharList* path, char* message){
+char* getFileName(CharList* path, char* message, char* extension){
 	if(path == NULL){
 		path = createCharList();
 	}
@@ -49,12 +49,43 @@ char* getFileName(CharList* path, char* message){
 		elementToRemove++;
 	}
 	
-	printf("\n%s", message);
+	if(message != NULL){
+		printf("\n%s", message);
+	}
 	
-	int buff = 0;
+	int size = 0, zeroIndex = 0, check = 0, count = 0, buff = 0;
+	char* lastVal;
+	
+	if(extension != NULL){
+		size = strlen(extension);
+	}
+	
+	if(size != 0){
+		lastVal = malloc(sizeof(char)*size);
+		if(lastVal == NULL){
+			printf("Can't read the check : memory error. End of program");
+		}	
+	}
 	while( (buff = fgetc(stdin)) != EOF && buff != '\n' ){
 		appendCharList((char)buff, path);
 		elementToRemove++;
+		
+		if(size != 0){
+			lastVal[zeroIndex] = (char)buff;
+			zeroIndex = (zeroIndex+1)%size;
+		}
+	}
+	
+	if(size != 0){
+		while(check == 0 && count < size){
+			if(lastVal[(zeroIndex+count)%size] != extension[count]){
+				check = 1;
+				for(int i = 0; i < size; i ++){
+					appendCharList(extension[i], path);
+					elementToRemove++;
+				}
+			}
+		}
 	}
 	
 	char* copy = convertCharListToTab(path);
@@ -63,6 +94,9 @@ char* getFileName(CharList* path, char* message){
 		removeLastCharList(path);
 	}
 	
+	if(size != 0){
+		free(lastVal);
+	}
 	return copy;
 }
 
@@ -128,62 +162,75 @@ int main(int argc, char** argv){
 	
 	char input = getChar('1', '2', MODE_CHOICE_TEXT); //Getting the user input compression on decompression
 	
+	
+	//Check if the ppm folder exist	
+	if(folderExist(ppmFolderPath.tab) == 0){
+		printf("Folder %s do no existe creating it\n", ppmFolderPath.tab);
+		createFolder(ppmFolderPath.tab);
+	}
+
+
+	//Asking user to put file in the ppm folder
+	if(input == 1){
+		printf("You can add ppm file in the %s directory\nWhen you are ready, press return ", ppmFolderPath.tab);
+	}else{
+		printf("You can add compressed file in the %s directory\nWhen you are ready, press return ", ppmFolderPath.tab);
+	}
+	clearStdinBuffer(); //Clear the stdin buffer, but if buffer is already empty, wait for an input
+
+
+	//Getting the number of element inside the directory
+	int ppmFileNb = folderChildNumber(ppmFolderPath.tab);
+	printf("There is %d element in %s\n", ppmFileNb, ppmFolderPath.tab);
+
+	if(ppmFileNb == 0){
+		printf("The folder %s is empty, please add file.\nEnd of programme.\n", ppmFolderPath.tab);
+		free(relativeExecutablePath.tab);
+		free(ppmFolderPath.tab);
+		exit(0);
+	}
+	
+
+	//Getting the list of file name in the directory
+	CharList** elementNameTab = malloc(sizeof(CharList*)*ppmFileNb);
+	if(elementNameTab == NULL){
+		printf("\nCan't get the file list, memory error.\n");
+		free(relativeExecutablePath.tab);
+		free(ppmFolderPath.tab);
+		exit(0);
+	}
+	
+	int result = folderChildName(ppmFolderPath.tab, elementNameTab, ppmFileNb);
+	if(0>result){
+		printf("[ERROR] Can't get all the child in %s because the tab is to tiny.\nEnd of program.\n", ppmFolderPath.tab);
+		free(relativeExecutablePath.tab);
+		free(ppmFolderPath.tab);
+	
+		for(int i = 0; i < ppmFileNb; i++){
+			destroyCharList(elementNameTab[i]);
+		}
+	
+		free(elementNameTab);
+		exit(0);
+	}else if(result != 0){
+		printf("[DEBUG] I don't know why but the tab is to big, there are %d empty cels. But we don't care because the programe work well !\n", result);
+		elementNameTab -= result;
+	}
+
+	int endianness = getEndianness();
+	int sizeName = 0;
+
+	char* out, *in;
+
+	//The function fopen use relative path from executable, not execution location
+	CharList* outList = convertTabToCharList(ppmFolderPath.tab, ppmFolderPath.size);
+	CharList* inList = convertTabToCharList(ppmFolderPath.tab, ppmFolderPath.size);
+	appendCharList(DELIMITER, inList);
+	
+	
+	
 	//Compression mode
 	if(input ==  '1'){
-		if(folderExist(ppmFolderPath.tab) == 0){
-			printf("Folder %s do no existe creating it\n", ppmFolderPath.tab);
-			createFolder(ppmFolderPath.tab);
-		}
-		
-		printf("You can add ppm file in the %s directory\nWhen you are ready, press return ", ppmFolderPath.tab);
-		clearStdinBuffer(); //Clear the stdin buffer, but if buffer is already empty, wait for an input
-		
-		//Getting the number of element inside the directory
-		int ppmFileNb = folderChildNumber(ppmFolderPath.tab);
-		printf("There is %d element in %s\n", ppmFileNb, ppmFolderPath.tab);
-		
-		if(ppmFileNb == 0){
-			printf("The folder %s is empty, please add file.\nEnd of programme.\n", ppmFolderPath.tab);
-			free(relativeExecutablePath.tab);
-			free(ppmFolderPath.tab);
-			exit(0);
-		}
-		
-		//Getting the list of file name in the directory
-		CharList** elementNameTab = malloc(sizeof(CharList*)*ppmFileNb);
-		if(elementNameTab == NULL){
-			printf("\nCan't get the file list, memory error.\n");
-			free(relativeExecutablePath.tab);
-			free(ppmFolderPath.tab);
-			exit(0);
-		}
-		
-		int result = folderChildName(ppmFolderPath.tab, elementNameTab, ppmFileNb);
-		if(0>result){
-			printf("[ERROR] Can't get all the child in %s because the tab is to tiny.\nEnd of program.\n", ppmFolderPath.tab);
-			free(relativeExecutablePath.tab);
-			free(ppmFolderPath.tab);
-			
-			for(int i = 0; i < ppmFileNb; i++){
-				destroyCharList(elementNameTab[i]);
-			}
-			
-			free(elementNameTab);
-			exit(0);
-		}else if(result != 0){
-			printf("[DEBUG] I don't know why but the tab is to big, there are %d empty cels. But we don't care because the programe work well !\n", result);
-			elementNameTab -= result;
-		}
-		
-		int endianness = getEndianness();
-		int sizeName = 0;
-
-		char* out, *in;
-		
-		//The function fopen use relative path from executable, not execution location
-		CharList* outList = convertTabToCharList(ppmFolderPath.tab, ppmFolderPath.size);
-		CharList* inList = convertTabToCharList(ppmFolderPath.tab, ppmFolderPath.size);
-		appendCharList(DELIMITER, inList);
 		for(int i = 0; i < ppmFileNb; i++){
 			sizeName = getSize(elementNameTab[i]);
 			concatenateCharList(inList, elementNameTab[i]);
@@ -191,7 +238,7 @@ int main(int argc, char** argv){
 			printf("Current file : ");
 			displayTextCharList(inList);
 			
-			out = getFileName(outList, "Please put the name for compressed file : \n");
+			out = getFileName(outList, "Please put the name for compressed file : \n", NULL);
 			in = convertCharListToTab(inList);
 			printf("The output file will be %s\n", out);
 			printf("Opening file : %s\n", in);
@@ -214,7 +261,7 @@ int main(int argc, char** argv){
 			
 		free(elementNameTab);
 	}else{
-		decompression("ppm/A", getEndianness(), "A.ppm");
+		/*decompression("ppm/A", getEndianness(), "A.ppm");
 		decompression("ppm/B", getEndianness(), "B.ppm");
 		decompression("ppm/C", getEndianness(), "C.ppm");
 		decompression("ppm/D", getEndianness(), "D.ppm");
@@ -223,8 +270,40 @@ int main(int argc, char** argv){
 		decompression("ppm/G", getEndianness(), "G.ppm");
 		decompression("ppm/H", getEndianness(), "H.ppm");
 		decompression("ppm/I", getEndianness(), "I.ppm");
-		decompression("ppm/J", getEndianness(), "J.ppm");
+		decompression("ppm/J", getEndianness(), "J.ppm");*/
+		
+		for(int i = 0; i < ppmFileNb; i++){
+			sizeName = getSize(elementNameTab[i]);
+			concatenateCharList(inList, elementNameTab[i]);
+			
+			printf("Current file : ");
+			displayTextCharList(inList);
+			
+			out = getFileName(outList, "Please put the name for ppm image : \n", ".ppm");
+			in = convertCharListToTab(inList);
+			printf("The output file will be %s\n", out);
+			
+			decompression(in, endianness, out);
+			
+			for(int k = 0; k < sizeName; k++){
+				removeLastCharList(inList);
+			}
+			
+			free(out);
+			free(in);		
+			
+		}
+		
+		for(int i = 0; i < ppmFileNb; i++){
+				destroyCharList(elementNameTab[i]);
+		}
+		
+			
+		free(elementNameTab);
 	}
+	
+	destroyCharList(inList);
+	destroyCharList(outList);
 	
 	free(relativeExecutablePath.tab);
 	free(ppmFolderPath.tab);
