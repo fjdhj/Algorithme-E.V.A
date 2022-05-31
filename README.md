@@ -14,7 +14,9 @@ Because we care a lot about customer transparency, our program will tell you pre
 4) On your terminal, go to your chosen directory and type command "make" to begin.
 5) Follow the instructions that appear on screen.
 6) When compressing or uncompressing, old files are not removed to make sure no accidents happen.
-7) Have fun !
+7) If you ever want to stop using EVA, type "make clean" in your terminal to delete all our executables / object files.
+8) Have fun !
+
 
 --**List of modules**--
 
