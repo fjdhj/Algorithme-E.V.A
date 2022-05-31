@@ -23,12 +23,12 @@ Because we care a lot about customer transparency, our program will tell you pre
 main.c :                 The main function.  
 fonctions.c :            C file containing all intermediary functions.  
 ppm_lib.c / ppm_lib.h :  C package containing intermediary functions used to handle PPM files.  
-list.c / list.h :       C package containing intermediary functions used to manipulate linked lists.  
+list.c / list.h :        C package containing intermediary functions used to manipulate linked lists.  
 files.c :                C file containing intermediary functions used to manage directories and files.  
 header.h :               C header. Contains libraries inclusions, declaration of constants and prototypes.  
 makefile :               Our makefile.
 
 
-Libraries used : stdio.h ; stdlib.h ; dirent.h ; <sys/time.h> ; string.h ; math.h ; errno.h
+Libraries used : stdio.h ; stdlib.h ; dirent.h ; <sys/time.h> ; string.h ; math.h ; errno.h : <sys/stat.h>
 
 -Théo Kalifa & Alexandre Grisez \ PréIng1 Groupe 6 MI \ CY TECH
