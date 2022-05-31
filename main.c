@@ -85,6 +85,7 @@ char* getFileName(CharList* path, char* message, char* extension){
 					elementToRemove++;
 				}
 			}
+			count++;
 		}
 	}
 	

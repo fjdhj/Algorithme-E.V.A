@@ -359,7 +359,7 @@ void nextPixel(long* x, long* y, unsigned int width){
 void decompression(char* filename, int endianness, char* outputfile){
 	unsigned int cache[64] = {0};
 	unsigned int previouspixel = 0, currentpixel = 0;
-	
+	unsigned long start = 0, end = 0;
 	int cacheIndex = 0, nbPixelSuite = 0;
 	
 	int width = 0, height = 0, range = 0, color = 0;
@@ -376,6 +376,7 @@ void decompression(char* filename, int endianness, char* outputfile){
 		exit(-1);
 	}
 	
+	start = timer();
 	
 	//The first 16 byte are for the width, height, range and color, we need to get them
 	read4blocks(compress, &width, endianness);
@@ -480,6 +481,20 @@ void decompression(char* filename, int endianness, char* outputfile){
 	}
 	
 	ppmSave(uncompressed, outputfile);
+	int compressedsize = ftell(compress);
 	fclose(compress);
+	
+	FILE* temp = fopen(outputfile, "rb");
+	if(temp == NULL){
+		printf("An error occure. End of program\n");
+		exit(-1);
+	}
+	int uncompressedsize = size(temp);
+	
+	fclose(temp);
+	
+	end = timer();
+	printf("\nCompressing file took %f seconds",(end-start)/1000000.0);
+	printf("\nCompression ratio : uncompressed is %f%% the size of the compressed image.\n",(uncompressedsize/(compressedsize/1.0))*100);
 	
 }
