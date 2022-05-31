@@ -28,6 +28,6 @@ header.h : C header. Contains libraries inclusions, declaration of constants and
 makefile : Our makefile.
 
 
-Libraries used : stdio.h ; stdlib.h ; dirent.h ; ppm_lib.h ; ppm_lib.c ; <sys/time.h> ; string.h ; math.h
+Libraries used : stdio.h ; stdlib.h ; dirent.h ; <sys/time.h> ; string.h ; math.h
 
 -Théo Kalifa & Alexandre Grisez \ PréIng1 Groupe 6 MI \ CY TECH
