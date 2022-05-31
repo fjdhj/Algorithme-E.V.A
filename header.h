@@ -1,10 +1,10 @@
 #include <sys/time.h>
 #include "ppm_lib.c"
-#define EVA_BLK_SAME 192
-#define EVA_BLK_INDEX 0
-#define EVA_BLK_DIFF 64
-#define EVA_BLK_LUMA 32768
-#define EVA_BLK_RGB 4261412864
+#define EVA_BLK_SAME 0xC0
+#define EVA_BLK_INDEX 0x0
+#define EVA_BLK_DIFF 0x40
+#define EVA_BLK_LUMA 0x8000
+#define EVA_BLK_RGB 0xFE000000
 
 /*
 This function returns the endianness setting of the machine it is being executed on.
