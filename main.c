@@ -291,17 +291,7 @@ int main(int argc, char** argv){
 			
 		free(elementNameTab);
 	}else{
-		/*decompression("ppm/A", getEndianness(), "A.ppm");
-		decompression("ppm/B", getEndianness(), "B.ppm");
-		decompression("ppm/C", getEndianness(), "C.ppm");
-		decompression("ppm/D", getEndianness(), "D.ppm");
-		decompression("ppm/E", getEndianness(), "E.ppm");
-		decompression("ppm/F", getEndianness(), "F.ppm");
-		decompression("ppm/G", getEndianness(), "G.ppm");
-		decompression("ppm/H", getEndianness(), "H.ppm");
-		decompression("ppm/I", getEndianness(), "I.ppm");
-		decompression("ppm/J", getEndianness(), "J.ppm");*/
-		
+	
 		for(int i = 0; i < ppmFileNb; i++){
 			sizeName = getSize(elementNameTab[i]);
 			concatenateCharList(inList, elementNameTab[i]);
