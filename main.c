@@ -1,7 +1,5 @@
 #include"header.h"
 
-#define MODE_CHOICE_TEXT "\nPlease choose an operating mode\n1) Compression\n2) Decompression\nPossibles answer are 1, 2 : "
-
 int getChar(int minVal, int maxVal, char* message){
 	int readChar = 0; //Contain a char when fgetc is use
 	int tmp = 0;      //A temp var, use for store data a short amount of time
@@ -35,6 +33,24 @@ int getChar(int minVal, int maxVal, char* message){
 	}while(check == 0);
 	
 	return readChar;
+}
+
+void clearScreen(char mode){
+	for(int i = 0;i < NB_LINE_CLEAR_SCREEN; i++){
+		printf("\n");
+	}
+	printf("EVA algorithm configuration interface\n");
+	
+	//Compression
+	if(mode == '1'){
+		printf("[MODE : COMPRESSION]\n\n");
+		
+	//Decompression
+	}else if(mode == '2'){
+		printf("[MODE : DECOMPRESSION]\n\n");
+	}else{
+		printf("\n");
+	}
 }
 
 char* getFileName(CharList* path, char* message, char* extension){
@@ -106,6 +122,8 @@ void clearStdinBuffer(){
 	while(tmp != '\n' && tmp != EOF){
 		tmp=fgetc(stdin);
 	}
+	
+	
 }
 
 CharTab getExecutableLocation(char* arg0){
@@ -159,37 +177,39 @@ int main(int argc, char** argv){
 	
 	
 	//Start intecteraction with user
-	printf("EVA algorithm configuration interface\n");
-	
+	clearScreen(-1);
 	char input = getChar('1', '2', MODE_CHOICE_TEXT); //Getting the user input compression on decompression
 	
-	
+	clearScreen(input);
 	//Check if the ppm folder exist	
 	if(folderExist(ppmFolderPath.tab) == 0){
 		printf("Folder %s do no existe creating it\n", ppmFolderPath.tab);
 		createFolder(ppmFolderPath.tab);
 	}
 
+	int ppmFileNb = 0;
 
-	//Asking user to put file in the ppm folder
-	if(input == 1){
-		printf("You can add ppm file in the %s directory\nWhen you are ready, press return ", ppmFolderPath.tab);
-	}else{
-		printf("You can add compressed file in the %s directory\nWhen you are ready, press return ", ppmFolderPath.tab);
-	}
-	clearStdinBuffer(); //Clear the stdin buffer, but if buffer is already empty, wait for an input
+	do{
+		//Asking user to put file in the ppm folder
+		if(input == 1){
+			printf("You can add ppm file in the %s directory\nWhen you are ready, press return ", ppmFolderPath.tab);
+		}else{
+			printf("You can add compressed file in the %s directory\nWhen you are ready, press return ", ppmFolderPath.tab);
+		}
+		clearStdinBuffer(); //Clear the stdin buffer, but if buffer is already empty, wait for an input
 
+	
+		clearScreen(input);
+	
+		//Getting the number of element inside the directory
+		ppmFileNb = folderChildNumber(ppmFolderPath.tab);
+		printf("There is %d element in %s\n", ppmFileNb, ppmFolderPath.tab);
 
-	//Getting the number of element inside the directory
-	int ppmFileNb = folderChildNumber(ppmFolderPath.tab);
-	printf("There is %d element in %s\n", ppmFileNb, ppmFolderPath.tab);
-
-	if(ppmFileNb == 0){
-		printf("The folder %s is empty, please add file.\nEnd of programme.\n", ppmFolderPath.tab);
-		free(relativeExecutablePath.tab);
-		free(ppmFolderPath.tab);
-		exit(0);
-	}
+		if(ppmFileNb == 0){
+			clearScreen(input);
+			printf("The folder %s is empty, please add file.\n\n", ppmFolderPath.tab);
+		}
+	}while(ppmFileNb == 0);
 	
 
 	//Getting the list of file name in the directory

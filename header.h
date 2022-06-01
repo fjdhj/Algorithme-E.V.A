@@ -11,6 +11,9 @@
 
 #define DEFAULT_PPM_FOLDER_NAME "ppm"
 
+#define MODE_CHOICE_TEXT "\nPlease choose an operating mode\n1) Compression\n2) Decompression\nPossibles answer are 1, 2 : "
+#define NB_LINE_CLEAR_SCREEN 70
+
 #ifdef __linux__
 	#define DELIMITER '/'
 #else
@@ -48,7 +51,9 @@ int getChar(int minVal, int maxVal, char* message);
 */
 void clearStdinBuffer();
 
-
+/* Put NB_LINE_CLEAR_SCREEN \n char in order clear the screen
+*/
+void clearScreen(char mode);
 
 /* ________________________________
 Prototype gestiondossier.c function
