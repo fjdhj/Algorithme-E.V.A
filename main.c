@@ -84,20 +84,22 @@ char* getFileName(CharList* path, char* message, char* extension){
 			printf("Can't read the check : memory error. End of program");
 		}	
 	}
-	do{
-		int check = 0;		
+	
+	do{	
 		while( (buff = fgetc(stdin)) != EOF && buff != '\n' ){
 			appendCharList((char)buff, path);
 			elementToRemove++;
+			check = 1;
 		
 			if(size != 0){
 				lastVal[zeroIndex] = (char)buff;
 				zeroIndex = (zeroIndex+1)%size;
 			}
 		
-			check = 1;
 		}
-	}while(check == 0);
+	}while(check	 == 0);
+	
+	check = 0;
 	
 	
 	if(size != 0){
