@@ -281,7 +281,8 @@ int main(int argc, char** argv){
 			}
 			
 			free(out);
-			free(in);		
+			free(in);
+			printf("\n\n\n");
 			
 		}
 		
