@@ -4,8 +4,9 @@ int getChar(int minVal, int maxVal, char* message){
 	int readChar = 0; //Contain a char when fgetc is use
 	int tmp = 0;      //A temp var, use for store data a short amount of time
 	char check = 0;    //Use to make a check in a if or a while
-	
+	clearScreen(0);
 	do{
+		
 		printf("%s", message);
 		
 		readChar = fgetc(stdin);
@@ -19,6 +20,7 @@ int getChar(int minVal, int maxVal, char* message){
 		
 		//Check if the answer has an error (not valide char or to many char)
 		if( !(minVal <= readChar && readChar <= maxVal && (tmp == '\n' || tmp == EOF)) ){
+			clearScreen(0);
 			printf("\n/!\\Please enter a valid answer/!\\\n\n\n");
 			check = 0;
 			
@@ -82,15 +84,21 @@ char* getFileName(CharList* path, char* message, char* extension){
 			printf("Can't read the check : memory error. End of program");
 		}	
 	}
-	while( (buff = fgetc(stdin)) != EOF && buff != '\n' ){
-		appendCharList((char)buff, path);
-		elementToRemove++;
+	do{
+		int check = 0;		
+		while( (buff = fgetc(stdin)) != EOF && buff != '\n' ){
+			appendCharList((char)buff, path);
+			elementToRemove++;
 		
-		if(size != 0){
-			lastVal[zeroIndex] = (char)buff;
-			zeroIndex = (zeroIndex+1)%size;
+			if(size != 0){
+				lastVal[zeroIndex] = (char)buff;
+				zeroIndex = (zeroIndex+1)%size;
+			}
+		
+			check = 1;
 		}
-	}
+	}while(check == 0);
+	
 	
 	if(size != 0){
 		while(check == 0 && count < size){
@@ -177,7 +185,6 @@ int main(int argc, char** argv){
 	
 	
 	//Start intecteraction with user
-	clearScreen(-1);
 	char input = getChar('1', '2', MODE_CHOICE_TEXT); //Getting the user input compression on decompression
 	
 	clearScreen(input);
