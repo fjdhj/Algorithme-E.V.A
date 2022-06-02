@@ -11,7 +11,7 @@
 
 #define DEFAULT_PPM_FOLDER_NAME "ppm"
 
-#define MODE_CHOICE_TEXT "\nPlease choose an operating mode\n1) Compression\n2) Decompression\nPossibles answer are 1, 2 : "
+#define MODE_CHOICE_TEXT "\nPlease choose an operating mode\n1) Compression\n2) Decompression\nPossible answers are 1, 2 : "
 #define NB_LINE_CLEAR_SCREEN 70
 
 #ifdef __linux__
@@ -37,21 +37,21 @@ ________________________________ */
 */
 int main();
 
-/* Read a char from the user, the function check tif the value is allow
+/* Reads a char from the user, the function checks if the value is allowed
  *
- * minVal : the minimal value allow
- * maxVal : the maximal value allox
+ * minVal : the minimal value allowed
+ * maxVal : the maximal value allowed
  * message : the message to display
  *
- * Return an int containing the value of the char given by the user
+ * Returns an int containing the value of the char given by the user
 */
 int getChar(int minVal, int maxVal, char* message);
 
-/* Clear the buffer of stdin with fgetc
+/* Clears the buffer of stdin with fgetc
 */
 void clearStdinBuffer();
 
-/* Put NB_LINE_CLEAR_SCREEN \n char in order clear the screen
+/* Puts NB_LINE_CLEAR_SCREEN \n char in order to clear the screen
 */
 void clearScreen(char mode);
 
@@ -59,39 +59,39 @@ void clearScreen(char mode);
 Prototype gestiondossier.c function
 ________________________________ */
 
-/* Check if the given folder exist
- * If an unknow error occurr, close the program
+/* Checks if the given folder exists
+ * If an unknow error occurrs, closes the program
  * 
  * path : the path to the folder
  * 
- * return : a char containing 1 if the folder exist, 0 otherwise
+ * returns : a char containing 1 if the folder exists, 0 otherwise
 */
 char folderExist(const char* path);
 
-/* Count the amount of element in a given folder
- * If an unknow error occurr, close the program
- * If the directory do not exist, the program is also close 
+/* Counts the amount of elements in a given folder
+ * If an unknow error occurrs, closes the program
+ * If the directory does not exist, the program is also closed 
  * 
  * path : the path to the folder
  * 
- * return : an int containing the amount of elements in a given folder
+ * returns : an int containing the amount of elements in a given folder
 */
 int folderChildNumber(const char* path);
 
-/* Create a folder
- * path : where the folder need to be created
+/* Creates a folder
+ * path : where the folder needs to be created
 */
 void createFolder(const char* path);
 
-/* Put elements name in the given elementTab
- * If an unknow error occurr, close the program
- * If the directory do not exist or is empty, the program is also close
+/* Puts elements name in the given elementTab
+ * If an unknow error occurrs, closes the program
+ * If the directory does not exist or is empty, the program is also closed
  * 
  * path : the path to the folder
  * elementNameTab : a tab for storing the child name
  * tabSize : the size of elementNameTab
  *
- * return : -1 if some file miss in elementTab, the size remain in elementNameTab otherwise
+ * return : -1 if some file misses in elementTab, the size remains in elementNameTab otherwise
 */
 int folderChildName(const char* path, CharList** elementNameTab, int tabSize);
 
@@ -154,7 +154,7 @@ Does not return anything.
 void write2blocks(FILE* file,unsigned short val,int endianness);
 
 /*
-This function read 2 bytes from a binary file, taking into account endianness.
+This function reads 2 bytes from a binary file, taking into account endianness.
 FILE* file is the stream to the affected file. 
 Short* val represents the 2 bytes read.
 Int endianness is the endianness value defined by a call of getEndianness().
@@ -171,9 +171,9 @@ Does not return anything.
 void write1blocks(FILE* file,char val);
 
 /*
-This function writes a byte into a binary file.
+This function reads a byte from a binary file.
 FILE* file is the stream to the affected file. 
-char* val represents the byte written.
+char* val represents the byte read.
 Does not return anything.
 */
 void read1blocks(FILE* file, unsigned char*	 val);
@@ -192,27 +192,23 @@ FILE* f is the stream to the desired file.
 long int size(FILE* f);
 
 /*
-This function compresses a .ppm image using EVA. It creates a binary file which name will be specified by the user. 
+This function compresses a .ppm image using EVA. It creates a binary file which name is specified by the user. 
 It takes into account the endianness of the machine it is used on.
 Created binary file's 16 first bytes are respectively the width,height,range and colors variables of the original image as they are defined in ppm_lib.h. 
 Remaining bytes are the various blocks used by EVA.
-Image used and created file will be found at [filename].
 char* filename is the name of the to be compressed PPM image. 
 Int endianness is the endianness value defined by a call of getEndianness().
-char* outputfile is the name of the binary outuput file.
+char* outputfile is the name of the binary output file.
 Does not return anything.
 */
 void compression(char* filename,int endianness, char* outputfile);
 
 /*
-This function decompresses a fille using EVA. It creates a ppm image which name will be specified by the user.
+This function decompresses a file using EVA. It creates a ppm image which name is specified by the user.
 It takes into account the endianness of the machine it is used on.
-The 16 first bytes are respectively the width,height,range and colors variables of the original image as they are defined in ppm_lib.h.
-Remaining bytes are the various blocks used by EVA.
-File used will be found at [filename]
 char* filename is the name of the file to be decompressed. 
 Int endianness is the endianness value defined by a call of getEndianness().
-char* outputfile is the name of the ppm outuput file.
+char* outputfile is the name of the ppm output file.
 Does not return anything.
 */
 void decompression(char* filename, int endianness, char* outputfile);
