@@ -197,10 +197,7 @@ void compression(char* filename,int endianness, char* outputfile){
     for(i=0;i<64;i++){
           cache[i]=0;
     }
-/*
-    AJOUTER PARTIE GESTION FICHIERS ET NOMS 
-    
-*/
+	
     //Getting the size of the ppm image.
     FILE* temporary=fopen(filename,"rb");
     if(!temporary){
@@ -333,8 +330,8 @@ void compression(char* filename,int endianness, char* outputfile){
         }
     }
 	
-	if(samepixels != 0){
-    		write1blocks(new,EVA_BLK_SAME+samepixels-1);
+    if(samepixels != 0){
+    	write1blocks(new,EVA_BLK_SAME+samepixels-1);
     }
 	
     //Getting new file's size and closing streams.
