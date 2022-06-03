@@ -52,11 +52,12 @@ int getChar(int minVal, int maxVal, char* message);
 void clearStdinBuffer();
 
 /* Puts NB_LINE_CLEAR_SCREEN \n char in order to clear the screen
+ * mode : the current mode (1 : compression, 2 : decompression, other : no mode)
 */
 void clearScreen(char mode);
 
 /* ________________________________
-Prototype gestiondossier.c function
+Prototype fille.c function
 ________________________________ */
 
 /* Checks if the given folder exists
