@@ -200,7 +200,7 @@ int main(int argc, char** argv){
 
 	do{
 		//Asking user to put file in the ppm folder
-		if(input == 1){
+		if(input == '1'){
 			printf("You can add ppm file in the %s directory\nWhen you are ready, press return ", ppmFolderPath.tab);
 		}else{
 			printf("You can add compressed file in the %s directory\nWhen you are ready, press return ", ppmFolderPath.tab);
