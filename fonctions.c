@@ -385,12 +385,10 @@ void decompression(char* filename, int endianness, char* outputfile){
 	PPM_IMG* uncompressed = ppmNew(width, height, range, color);
 	
 	while(y != height){
-		//printf("Current x : %ld, y : %ld\n", x, y);
 		read1blocks(compress, &bloc);
 		
+		//Chec if we have a EVA_BLK_RGB_READER bloc
 		if(bloc == EVA_BLK_RGB_READER){
-		
-			//printf("EVA_BLK_RGB_READER\n");
 		
 			read1blocks(compress, &redP);
 			read1blocks(compress, &greenP);
@@ -403,10 +401,9 @@ void decompression(char* filename, int endianness, char* outputfile){
 		//This condition means if the 2 strong bite are on 1, we have a EVA_BLK_SAME bloc
 		}else if((bloc >> 6) == 3){
 		
-			//printf("EVA_BLK_SAME\n");
-		
 			nbPixelSuite = (bloc-EVA_BLK_SAME)+1;
-			//printf("NB SUITE : %d\n", nbPixelSuite);
+			
+			//Add the number of pixel give by the bloc
 			for(int i = 0; i < nbPixelSuite; i++){
 				ppmWrite(uncompressed, x, y, currentpixel);
 				nextPixel(&x, &y, width);
@@ -420,18 +417,16 @@ void decompression(char* filename, int endianness, char* outputfile){
 		
 		//This condition means if the 2 strong bite are on 0, we have a EVA_BLK_INDEX bloc
 		}else if((bloc >> 6) == 0){
-		
-			//printf("EVA_BLK_INDEX, index val = %d\n", bloc);
 			
+			//We need to check in teh cache the color
 			currentpixel = cache[bloc];
 			ppmWrite(uncompressed, x, y, currentpixel);
 			nextPixel(&x, &y, width);
 			
 		//This condition means if the byte look like 01xxxxxx, we have a EVA_BLK_DIFF bloc
 		}else if((bloc >> 6) == 1){
-		
-			//printf("EVA_BLK_DIFF\n");
 			
+			//We need to calculate the color from the difference give by the bloc
 			redP = red(previouspixel) -2 + ((bloc&0x30)>>4);
 			
 			greenP = (green(previouspixel)-2) + ((bloc&0x0C)>>2);
@@ -445,8 +440,6 @@ void decompression(char* filename, int endianness, char* outputfile){
 		//This condition means if the byte look like 10xxxxxx, we have a EVA_BLK_LUMA bloc
 		}else if((bloc >> 6) == 2){
 		
-			//printf("EVA_BLK_LUMA\n");
-		
 			//We need to put the 8th bit on 0
 			bloc -= 128; //(64 = 01000000)
 			
@@ -457,6 +450,7 @@ void decompression(char* filename, int endianness, char* outputfile){
 			diffR = (bloc >> 4) + diffG - 8;
 			diffB = (bloc & 0xF) + diffG - 8;
 			
+			//We need to calculate the color from the difference give by the bloc
 			redP = diffR + red(previouspixel);
 			greenP = diffG + green(previouspixel);
 			blueP = diffB + blue(previouspixel);
